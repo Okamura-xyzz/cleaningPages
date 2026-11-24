@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Day Timeline｜学習＆生活スケジュール</title>
+  <title>Day Timeline｜時間比例スケジュール</title>
   <style>
     :root {
       --bg: #f2f2f7;
@@ -18,6 +18,8 @@
       --ios-purple: #af52de;
       --ios-teal: #30b0c7;
       --done-bg: #e9f9ee;
+      --hour-h: 64px; /* 1時間 = 64px（1分 = 64/60 px） */
+      --label-w: 56px;
     }
 
     * { box-sizing: border-box; }
@@ -27,14 +29,14 @@
       font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Hiragino Sans", "Noto Sans JP", sans-serif;
       background: var(--bg);
       color: var(--text);
-      line-height: 1.4;
+      line-height: 1.35;
     }
 
     .top-bar {
       position: sticky;
       top: 0;
       z-index: 50;
-      background: rgba(255, 255, 255, 0.92);
+      background: rgba(255, 255, 255, 0.94);
       backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--line);
       padding: 10px 14px 8px;
@@ -91,7 +93,6 @@
       padding: 6px 4px;
       border-radius: 12px;
       cursor: pointer;
-      transition: background 0.15s ease;
     }
 
     .day-pill:hover {
@@ -164,23 +165,33 @@
       padding: 0 14px;
     }
 
-    .timeline {
-      position: relative;
+    /* スクロール可能なタイムライン領域 */
+    .timeline-scroll {
+      max-height: 68vh;
+      overflow-y: auto;
       background: var(--surface);
       border-radius: 14px;
       border: 1px solid var(--line);
-      overflow: hidden;
-      padding: 8px 0;
-    }
-
-    .hour-row {
-      display: grid;
-      grid-template-columns: 56px 1fr;
-      min-height: 58px;
       position: relative;
     }
 
+    .timeline-canvas {
+      position: relative;
+      width: 100%;
+    }
+
+    .hour-row {
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: var(--hour-h);
+      display: flex;
+      align-items: flex-start;
+    }
+
     .hour-label {
+      width: var(--label-w);
+      flex-shrink: 0;
       font-size: 0.72rem;
       color: var(--muted);
       text-align: right;
@@ -189,30 +200,25 @@
       user-select: none;
     }
 
-    .hour-slot {
+    .hour-grid-line {
+      flex: 1;
+      height: 100%;
       border-top: 1px solid var(--line);
-      padding: 4px 10px 6px 6px;
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
       cursor: pointer;
     }
 
-    .hour-slot:hover {
+    .hour-grid-line:hover {
       background: #fafafa;
     }
 
-    .hour-row:first-child .hour-slot {
-      border-top: none;
-    }
-
+    /* 現在時刻ライン */
     .now-line {
       position: absolute;
-      left: 52px;
+      left: calc(var(--label-w) - 4px);
       right: 0;
       height: 2px;
       background: var(--ios-red);
-      z-index: 10;
+      z-index: 20;
       pointer-events: none;
     }
 
@@ -227,22 +233,25 @@
       background: var(--ios-red);
     }
 
+    /* 時間長に応じた高さのイベントブロック */
     .event-block {
+      position: absolute;
+      left: calc(var(--label-w) + 6px);
+      right: 10px;
       border-left: 4px solid var(--ios-blue);
       background: #eef6ff;
       color: #0b2e59;
-      border-radius: 8px;
-      padding: 6px 10px;
+      border-radius: 7px;
+      padding: 3px 8px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 8px;
+      gap: 6px;
       cursor: pointer;
-      transition: transform 0.1s ease, opacity 0.15s ease;
-    }
-
-    .event-block:hover {
-      transform: translateX(1px);
+      overflow: hidden;
+      z-index: 10;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      transition: opacity 0.15s ease;
     }
 
     .event-block.cat-physics { border-left-color: var(--ios-blue); background: #eaf3ff; color: #0c2d57; }
@@ -265,46 +274,62 @@
     .event-left {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
       min-width: 0;
       flex: 1;
     }
 
     .event-radio {
-      width: 17px;
-      height: 17px;
+      width: 15px;
+      height: 15px;
       accent-color: var(--ios-green);
       cursor: pointer;
       flex-shrink: 0;
     }
 
-    .event-meta {
+    .event-text-wrap {
+      display: flex;
+      align-items: center;
+      gap: 6px;
       min-width: 0;
+      flex-wrap: nowrap;
     }
 
     .event-time {
-      font-size: 0.7rem;
+      font-size: 0.68rem;
       font-weight: 700;
-      opacity: 0.8;
+      opacity: 0.82;
+      white-space: nowrap;
+      flex-shrink: 0;
     }
 
     .event-title {
-      font-size: 0.86rem;
+      font-size: 0.8rem;
       font-weight: 700;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
 
+    /* 15〜20分など短いブロック用のコンパクト表示 */
+    .event-block.compact {
+      padding: 1px 7px;
+    }
+
+    .event-block.compact .event-title {
+      font-size: 0.74rem;
+    }
+
     .event-edit-btn {
-      background: rgba(255, 255, 255, 0.75);
-      border: 1px solid rgba(0, 0, 0, 0.1);
-      padding: 2px 7px;
-      font-size: 0.7rem;
-      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.8);
+      border: 1px solid rgba(0, 0, 0, 0.12);
+      padding: 1px 6px;
+      font-size: 0.68rem;
+      border-radius: 5px;
       flex-shrink: 0;
     }
 
+    /* モーダル */
     .modal-backdrop {
       position: fixed;
       inset: 0;
@@ -409,8 +434,9 @@
     <div class="top-row">
       <span class="week-heading" id="week-heading">Day表示</span>
       <div class="actions">
+        <button id="scroll-1505-btn">15:05へ移動</button>
         <button class="primary" id="add-event-btn">＋ 予定追加</button>
-        <button id="reload-json-btn">schedule.json読込</button>
+        <button id="reload-json-btn">sche.json読込</button>
         <button id="export-btn">JSON保存</button>
         <label class="file-label">
           JSON選択
@@ -430,7 +456,9 @@
   </div>
 
   <main class="timeline-wrap">
-    <div class="timeline" id="timeline"></div>
+    <div class="timeline-scroll" id="timeline-scroll">
+      <div class="timeline-canvas" id="timeline-canvas"></div>
+    </div>
   </main>
 
   <div class="modal-backdrop" id="modal">
@@ -438,15 +466,15 @@
       <h2 id="modal-title">予定を編集</h2>
       <div class="field">
         <label for="m-start">開始時刻</label>
-        <input type="text" id="m-start" placeholder="15:00" />
+        <input type="text" id="m-start" placeholder="15:05" />
       </div>
       <div class="field">
         <label for="m-end">終了時刻</label>
-        <input type="text" id="m-end" placeholder="16:00" />
+        <input type="text" id="m-end" placeholder="15:25" />
       </div>
       <div class="field">
         <label for="m-title">内容・問題番号</label>
-        <input type="text" id="m-title" placeholder="大学生の初等力学 #51" />
+        <input type="text" id="m-title" placeholder="T-words 7-2,3（20分）" />
       </div>
       <div class="field">
         <label for="m-cat">カラー区分</label>
@@ -469,18 +497,20 @@
   </div>
 
   <script>
-    const STORAGE_KEY = "day_timeline_separated_v1";
-    const JSON_URL = "./schedule.json";
+    const STORAGE_KEY = "day_timeline_proportional_v1";
+    const JSON_URL = "./sche.json";
     const TODAY_ISO = "2026-11-24";
     const START_HOUR = 10;
     const END_HOUR = 24;
+    const HOUR_HEIGHT = 64; // px per hour
+    const PX_PER_MIN = HOUR_HEIGHT / 60;
 
     let state = {
       selectedDate: TODAY_ISO,
       weeks: [
         {
           id: "week-1",
-          title: "第1週（11/23〜11/29）",
+          title: "今週：第1週（11/23〜11/29）",
           days: [
             { date: "2026-11-23", label: "月曜日（11/23）", school: "10:30終了", events: [] },
             { date: "2026-11-24", label: "火曜日（11/24）", school: "12:10終了｜23:45就寝", events: [] },
@@ -522,12 +552,12 @@
         if (data && Array.isArray(data.weeks)) {
           state = { ...state, ...data };
           saveLocal();
-          render();
-          if (showNotice) showToast("schedule.json を読み込みました");
+          render(true);
+          if (showNotice) showToast("sche.json を読み込みました");
           return true;
         }
       } catch {
-        if (showNotice) showToast("schedule.json の取得に失敗しました（JSON選択をお試しください）");
+        if (showNotice) showToast("sche.json の取得に失敗しました");
       }
       return false;
     }
@@ -554,15 +584,16 @@
       }
     }
 
+    function timeToMinutes(str) {
+      if (!str) return null;
+      const parts = str.split(":").map(Number);
+      if (parts.length < 2 || isNaN(parts[0]) || isNaN(parts[1])) return null;
+      return parts[0] * 60 + parts[1];
+    }
+
     function getCurrentDay() {
       const w = state.weeks[0];
       return w.days.find(d => d.date === state.selectedDate) || w.days[1] || w.days[0];
-    }
-
-    function parseHour(timeStr) {
-      const [h, m] = (timeStr || "12:00").split(":").map(Number);
-      if (isNaN(h)) return 12;
-      return h + (isNaN(m) ? 0 : m / 60);
     }
 
     function toggleEvent(eventId) {
@@ -571,14 +602,22 @@
       if (!ev) return;
       ev.done = !ev.done;
       saveLocal();
-      render();
+      render(false);
       if (ev.done) {
         confettiEffect();
         showToast("完了！");
       }
     }
 
-    function render() {
+    function scrollTo1505() {
+      const scroller = document.getElementById("timeline-scroll");
+      const targetMin = 15 * 60 + 5; // 15:05
+      const startMin = START_HOUR * 60;
+      const y = (targetMin - startMin) * PX_PER_MIN;
+      scroller.scrollTop = Math.max(0, y - 16);
+    }
+
+    function render(shouldScrollTo1505 = false) {
       const week = state.weeks[0];
       const day = getCurrentDay();
       document.getElementById("week-heading").textContent = `${week.title} Day表示`;
@@ -597,7 +636,7 @@
         pill.addEventListener("click", () => {
           state.selectedDate = d.date;
           saveLocal();
-          render();
+          render(true);
         });
         strip.appendChild(pill);
       });
@@ -608,89 +647,110 @@
       const doneCount = events.filter(e => e.done).length;
       document.getElementById("day-progress").textContent = `完了: ${doneCount} / ${events.length}`;
 
-      const tl = document.getElementById("timeline");
-      tl.innerHTML = "";
+      const canvas = document.getElementById("timeline-canvas");
+      canvas.innerHTML = "";
+      const totalHours = END_HOUR - START_HOUR;
+      canvas.style.height = (totalHours * HOUR_HEIGHT) + "px";
 
-      const sorted = [...events].sort((a, b) => (a.start || "").localeCompare(b.start || ""));
-      const byHour = {};
-      for (let h = START_HOUR; h < END_HOUR; h++) byHour[h] = [];
-
-      sorted.forEach(ev => {
-        const hr = Math.floor(parseHour(ev.start));
-        const clamped = Math.max(START_HOUR, Math.min(END_HOUR - 1, hr));
-        byHour[clamped].push(ev);
-      });
-
+      // 時間グリッド行
       for (let h = START_HOUR; h < END_HOUR; h++) {
         const row = document.createElement("div");
         row.className = "hour-row";
+        row.style.top = ((h - START_HOUR) * HOUR_HEIGHT) + "px";
 
         const label = document.createElement("div");
         label.className = "hour-label";
         label.textContent = `${String(h).padStart(2, "0")}:00`;
 
-        const slot = document.createElement("div");
-        slot.className = "hour-slot";
-        slot.addEventListener("click", () => openModal(null, `${String(h).padStart(2, "0")}:00`));
-
-        byHour[h].forEach(ev => {
-          const block = document.createElement("div");
-          block.className = `event-block cat-${ev.cat || "physics"}` + (ev.done ? " done" : "");
-
-          const left = document.createElement("div");
-          left.className = "event-left";
-
-          const radio = document.createElement("input");
-          radio.type = "radio";
-          radio.className = "event-radio";
-          radio.checked = !!ev.done;
-          radio.addEventListener("click", (e) => {
-            e.stopPropagation();
-            toggleEvent(ev.id);
-          });
-
-          const meta = document.createElement("div");
-          meta.className = "event-meta";
-          meta.innerHTML = `
-            <div class="event-time">${ev.start || ""} - ${ev.end || ""}</div>
-            <div class="event-title">${ev.title}</div>
-          `;
-
-          left.appendChild(radio);
-          left.appendChild(meta);
-          block.addEventListener("click", (e) => {
-            e.stopPropagation();
-            toggleEvent(ev.id);
-          });
-
-          const editBtn = document.createElement("button");
-          editBtn.className = "event-edit-btn";
-          editBtn.textContent = "編集";
-          editBtn.addEventListener("click", (e) => {
-            e.stopPropagation();
-            openModal(ev.id);
-          });
-
-          block.appendChild(left);
-          block.appendChild(editBtn);
-          slot.appendChild(block);
-        });
+        const gridLine = document.createElement("div");
+        gridLine.className = "hour-grid-line";
+        gridLine.addEventListener("click", () => openModal(null, `${String(h).padStart(2, "0")}:00`));
 
         row.appendChild(label);
-        row.appendChild(slot);
-        tl.appendChild(row);
+        row.appendChild(gridLine);
+        canvas.appendChild(row);
       }
 
+      // 予定ブロックを時間（分）に比例した高さ・位置で配置
+      const baseMin = START_HOUR * 60;
+      const maxMin = END_HOUR * 60;
+
+      events.forEach(ev => {
+        const startMin = timeToMinutes(ev.start);
+        if (startMin === null) return;
+        let endMin = timeToMinutes(ev.end);
+        if (endMin === null || endMin <= startMin) {
+          endMin = startMin + 30;
+        }
+
+        const clampedStart = Math.max(baseMin, Math.min(maxMin, startMin));
+        const clampedEnd = Math.max(clampedStart + 10, Math.min(maxMin, endMin));
+        const durationMin = clampedEnd - clampedStart;
+
+        const topPx = (clampedStart - baseMin) * PX_PER_MIN;
+        const heightPx = Math.max(18, durationMin * PX_PER_MIN - 2);
+
+        const block = document.createElement("div");
+        block.className = `event-block cat-${ev.cat || "physics"}`
+          + (ev.done ? " done" : "")
+          + (durationMin <= 20 ? " compact" : "");
+        block.style.top = (topPx + 1) + "px";
+        block.style.height = heightPx + "px";
+
+        const left = document.createElement("div");
+        left.className = "event-left";
+
+        const radio = document.createElement("input");
+        radio.type = "radio";
+        radio.className = "event-radio";
+        radio.checked = !!ev.done;
+        radio.addEventListener("click", (e) => {
+          e.stopPropagation();
+          toggleEvent(ev.id);
+        });
+
+        const textWrap = document.createElement("div");
+        textWrap.className = "event-text-wrap";
+        textWrap.innerHTML = `
+          <span class="event-time">${ev.start || ""}–${ev.end || ""} (${durationMin}m)</span>
+          <span class="event-title">${ev.title}</span>
+        `;
+
+        left.appendChild(radio);
+        left.appendChild(textWrap);
+        block.addEventListener("click", (e) => {
+          e.stopPropagation();
+          toggleEvent(ev.id);
+        });
+
+        const editBtn = document.createElement("button");
+        editBtn.className = "event-edit-btn";
+        editBtn.textContent = "編集";
+        editBtn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          openModal(ev.id);
+        });
+
+        block.appendChild(left);
+        block.appendChild(editBtn);
+        canvas.appendChild(block);
+      });
+
+      // 現在時刻ライン（15:01）
       if (day.date === TODAY_ISO) {
+        const nowMin = 15 * 60 + 1;
         const nowLine = document.createElement("div");
         nowLine.className = "now-line";
-        const offsetRows = (14 + 55 / 60) - START_HOUR;
-        nowLine.style.top = (8 + offsetRows * 58) + "px";
-        tl.appendChild(nowLine);
+        nowLine.style.top = ((nowMin - baseMin) * PX_PER_MIN) + "px";
+        canvas.appendChild(nowLine);
+      }
+
+      if (shouldScrollTo1505) {
+        requestAnimationFrame(scrollTo1505);
       }
     }
 
-    function openModal(eventId, presetStart = "15:00") {
+    function openModal(eventId, presetStart = "15:05") {
       editTarget = { eventId };
       const day = getCurrentDay();
       const ev = eventId ? day.events.find(e => e.id === eventId) : null;
@@ -709,7 +769,8 @@
       editTarget = null;
     }
 
-    document.getElementById("add-event-btn").addEventListener("click", () => openModal(null, "15:00"));
+    document.getElementById("scroll-1505-btn").addEventListener("click", scrollTo1505);
+    document.getElementById("add-event-btn").addEventListener("click", () => openModal(null, "15:05"));
     document.getElementById("reload-json-btn").addEventListener("click", () => fetchExternalJson(true));
     document.getElementById("m-cancel").addEventListener("click", closeModal);
     document.getElementById("modal").addEventListener("click", (e) => {
@@ -734,7 +795,7 @@
       }
       saveLocal();
       closeModal();
-      render();
+      render(false);
     });
 
     document.getElementById("m-delete").addEventListener("click", () => {
@@ -743,7 +804,7 @@
       day.events = day.events.filter(e => e.id !== editTarget.eventId);
       saveLocal();
       closeModal();
-      render();
+      render(false);
       showToast("削除しました");
     });
 
@@ -752,10 +813,10 @@
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = "schedule.json";
+      a.download = "sche.json";
       a.click();
       URL.revokeObjectURL(url);
-      showToast("schedule.json を保存しました");
+      showToast("sche.json を保存しました");
     });
 
     document.getElementById("import-file").addEventListener("change", (e) => {
@@ -768,7 +829,7 @@
           if (parsed && Array.isArray(parsed.weeks)) {
             state = parsed;
             saveLocal();
-            render();
+            render(true);
             showToast("JSONを読み込みました");
           }
         } catch {
@@ -781,7 +842,7 @@
 
     (async () => {
       const hasLocal = loadLocal();
-      render();
+      render(true);
       if (!hasLocal) {
         await fetchExternalJson(false);
       }
