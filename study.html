@@ -15,6 +15,8 @@
       --success: #16a34a;
       --success-soft: #dcfce7;
       --danger: #dc2626;
+      --today: #fef9c3;
+      --today-border: #eab308;
       --border: #e2e8f0;
     }
 
@@ -25,17 +27,17 @@
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Hiragino Sans", "Noto Sans JP", sans-serif;
       background: var(--bg);
       color: var(--text);
-      line-height: 1.6;
+      line-height: 1.55;
     }
 
     header {
       background: linear-gradient(135deg, #1e3a8a, #2563eb);
       color: #fff;
-      padding: 24px 16px;
+      padding: 22px 16px;
     }
 
     .container {
-      max-width: 960px;
+      max-width: 1120px;
       margin: 0 auto;
       padding: 16px;
     }
@@ -43,7 +45,7 @@
     .nav-links {
       display: flex;
       gap: 8px;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
 
     .nav-links a {
@@ -62,14 +64,14 @@
     }
 
     h1 {
-      margin: 0 0 6px;
-      font-size: 1.5rem;
+      margin: 0 0 4px;
+      font-size: 1.45rem;
     }
 
     .subtitle {
       margin: 0;
       opacity: 0.92;
-      font-size: 0.92rem;
+      font-size: 0.9rem;
     }
 
     .toolbar {
@@ -84,8 +86,8 @@
       color: var(--text);
       border: 1px solid var(--border);
       border-radius: 8px;
-      padding: 8px 12px;
-      font-size: 0.85rem;
+      padding: 7px 12px;
+      font-size: 0.84rem;
       font-weight: 600;
       cursor: pointer;
       display: inline-flex;
@@ -119,26 +121,59 @@
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
       gap: 12px;
-      margin: 16px 0;
+      margin: 14px 0;
     }
 
     .card {
       background: var(--card);
       border: 1px solid var(--border);
       border-radius: 12px;
-      padding: 16px;
+      padding: 14px 16px;
       box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
     }
 
     .stat-value {
-      font-size: 1.5rem;
+      font-size: 1.45rem;
       font-weight: 700;
       color: var(--accent);
     }
 
     .stat-label {
-      font-size: 0.82rem;
+      font-size: 0.8rem;
       color: var(--muted);
+    }
+
+    /* ビュー切り替えバー */
+    .control-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .view-switcher {
+      display: inline-flex;
+      background: #e2e8f0;
+      padding: 4px;
+      border-radius: 10px;
+      gap: 4px;
+    }
+
+    .view-btn {
+      border: none;
+      background: transparent;
+      padding: 6px 12px;
+      border-radius: 7px;
+      font-size: 0.84rem;
+      color: #334155;
+    }
+
+    .view-btn.active {
+      background: #fff;
+      color: var(--accent);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
     }
 
     /* 週選択タブ */
@@ -147,15 +182,15 @@
       flex-wrap: wrap;
       gap: 8px;
       align-items: center;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
     }
 
     .week-tab {
-      padding: 7px 14px;
+      padding: 6px 13px;
       border-radius: 999px;
       border: 1px solid var(--border);
       background: var(--card);
-      font-size: 0.85rem;
+      font-size: 0.84rem;
       font-weight: 600;
       cursor: pointer;
     }
@@ -199,6 +234,7 @@
       outline: none;
     }
 
+    /* リスト表示 */
     .day-card {
       background: var(--card);
       border: 1px solid var(--border);
@@ -206,6 +242,11 @@
       padding: 14px 16px;
       margin-bottom: 12px;
       transition: border-color 0.2s ease, background 0.2s ease;
+    }
+
+    .day-card.today-card {
+      border-color: var(--today-border);
+      box-shadow: 0 0 0 2px rgba(234, 179, 8, 0.18);
     }
 
     .day-card.all-done {
@@ -228,11 +269,21 @@
       display: flex;
       align-items: center;
       gap: 8px;
+      flex-wrap: wrap;
     }
 
     .date-title {
       font-weight: 700;
       font-size: 1rem;
+    }
+
+    .today-badge {
+      font-size: 0.72rem;
+      padding: 2px 7px;
+      border-radius: 999px;
+      background: #fef08a;
+      color: #854d0e;
+      font-weight: 700;
     }
 
     .school-badge {
@@ -267,13 +318,8 @@
       transition: background 0.15s ease;
     }
 
-    .task-item:hover {
-      background: #f1f5f9;
-    }
-
-    .task-item.done {
-      background: var(--success-soft);
-    }
+    .task-item:hover { background: #f1f5f9; }
+    .task-item.done { background: var(--success-soft); }
 
     .task-main {
       display: flex;
@@ -316,7 +362,7 @@
     }
 
     .problem-range {
-      font-size: 0.85rem;
+      font-size: 0.84rem;
       color: var(--accent);
       font-weight: 700;
       background: #eff6ff;
@@ -346,7 +392,147 @@
     .empty-msg {
       font-size: 0.84rem;
       color: var(--muted);
-      padding: 6px 2px;
+      padding: 4px 2px;
+    }
+
+    /* カレンダー共通（週間7列 / 月間7列） */
+    .cal-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .cal-month-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+    }
+
+    .cal-grid {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .cal-weekday {
+      text-align: center;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--muted);
+      padding: 4px 0;
+    }
+
+    .cal-cell {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 8px;
+      min-height: 135px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .cal-cell.outside {
+      background: #f1f5f9;
+      opacity: 0.55;
+    }
+
+    .cal-cell.today-cell {
+      border-color: var(--today-border);
+      background: #fffef5;
+    }
+
+    .cal-cell.all-done {
+      border-color: #86efac;
+      background: #f8fff9;
+    }
+
+    .cal-cell-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .cal-date-num {
+      font-weight: 700;
+      font-size: 0.86rem;
+    }
+
+    .cal-add-mini {
+      padding: 1px 6px;
+      font-size: 0.74rem;
+      border-radius: 5px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      border: none;
+    }
+
+    .cal-school {
+      font-size: 0.7rem;
+      color: var(--muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .cal-tasks {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      flex: 1;
+    }
+
+    .cal-pill {
+      display: flex;
+      align-items: flex-start;
+      gap: 5px;
+      padding: 4px 6px;
+      border-radius: 6px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      font-size: 0.75rem;
+      cursor: pointer;
+      line-height: 1.3;
+    }
+
+    .cal-pill:hover {
+      background: #eff6ff;
+    }
+
+    .cal-pill.done {
+      background: var(--success-soft);
+      border-color: #bbf7d0;
+      color: #15803d;
+      text-decoration: line-through;
+    }
+
+    .cal-pill input[type="radio"] {
+      margin-top: 2px;
+      width: 13px;
+      height: 13px;
+      accent-color: var(--success);
+      flex-shrink: 0;
+    }
+
+    .cal-pill-text {
+      word-break: break-word;
+    }
+
+    @media (max-width: 780px) {
+      .cal-grid {
+        grid-template-columns: 1fr;
+      }
+      .cal-weekday {
+        display: none;
+      }
+      .cal-cell {
+        min-height: auto;
+      }
+      .cal-cell.outside {
+        display: none;
+      }
     }
 
     /* モーダル */
@@ -361,9 +547,7 @@
       z-index: 9000;
     }
 
-    .modal-backdrop.open {
-      display: flex;
-    }
+    .modal-backdrop.open { display: flex; }
 
     .modal {
       background: #fff;
@@ -379,9 +563,7 @@
       font-size: 1.15rem;
     }
 
-    .form-group {
-      margin-bottom: 12px;
-    }
+    .form-group { margin-bottom: 12px; }
 
     .form-group label {
       display: block;
@@ -391,7 +573,7 @@
       color: var(--muted);
     }
 
-    .form-group input, .form-group select {
+    .form-group input {
       width: 100%;
       padding: 8px 10px;
       border: 1px solid var(--border);
@@ -401,9 +583,15 @@
 
     .modal-footer {
       display: flex;
-      justify-content: flex-end;
+      justify-content: space-between;
+      align-items: center;
       gap: 8px;
       margin-top: 16px;
+    }
+
+    .modal-footer-right {
+      display: flex;
+      gap: 8px;
     }
 
     /* 完了エフェクト用 */
@@ -458,10 +646,10 @@
     <div class="container">
       <nav class="nav-links">
         <a href="index.html">清掃・生活ルーティン</a>
-        <a href="index2.html" class="active">週間勉強計画</a>
+        <a href="index2.html" class="active">週間＆カレンダー勉強計画</a>
       </nav>
       <h1>週間勉強計画＆問題集トラッカー</h1>
-      <p class="subtitle">1週間ごとに管理｜問題集・問題番号・範囲を自由に編集可能</p>
+      <p class="subtitle">今週（11/23〜）スタート｜リスト表示・週間カレンダー・月間カレンダー切り替え対応</p>
       <div class="toolbar">
         <button class="primary" id="add-week-btn">＋ 次の週を追加</button>
         <button id="export-btn">計画・進捗をJSON保存</button>
@@ -490,17 +678,31 @@
       </div>
     </section>
 
-    <section class="week-bar" id="week-tabs"></section>
-
-    <section class="card week-header-card">
-      <div class="week-title-group">
-        <input type="text" id="week-title-input" class="week-title-input" aria-label="週のタイトル" />
-        <span style="font-size: 0.78rem; color: var(--muted);">※タイトルはクリックで編集可</span>
+    <section class="control-row">
+      <div class="view-switcher">
+        <button class="view-btn active" data-view="list">リスト表示</button>
+        <button class="view-btn" data-view="week-cal">週間カレンダー</button>
+        <button class="view-btn" data-view="month-cal">月間カレンダー</button>
       </div>
-      <button class="danger" id="delete-week-btn">この週を削除</button>
+      <div style="font-size: 0.82rem; color: var(--muted);">
+        ※カレンダー上の問題をクリックで完了、ダブルクリック（または編集ボタン）で番号変更
+      </div>
     </section>
 
-    <section id="days-container"></section>
+    <!-- 週間ビュー用コントロール -->
+    <div id="week-controls">
+      <section class="week-bar" id="week-tabs"></section>
+      <section class="card week-header-card">
+        <div class="week-title-group">
+          <input type="text" id="week-title-input" class="week-title-input" aria-label="週のタイトル" />
+          <span style="font-size: 0.78rem; color: var(--muted);">※タイトルはクリックで編集可</span>
+        </div>
+        <button class="danger" id="delete-week-btn">この週を削除</button>
+      </section>
+    </div>
+
+    <!-- メインコンテンツ領域 -->
+    <section id="main-view-container"></section>
   </main>
 
   <!-- 追加・編集モーダル -->
@@ -513,101 +715,179 @@
       </div>
       <div class="form-group">
         <label for="input-book">問題集・参考書名</label>
-        <input type="text" id="input-book" placeholder="例：チャート式 数学II+B、システム英単語" />
+        <input type="text" id="input-book" placeholder="例：チャート式、システム英単語" />
       </div>
       <div class="form-group">
         <label for="input-range">問題番号・ページ範囲</label>
         <input type="text" id="input-range" placeholder="例：No.1〜25 / p.40〜48 / 例題12〜18" />
       </div>
       <div class="modal-footer">
-        <button id="modal-cancel">キャンセル</button>
-        <button class="primary" id="modal-save">保存する</button>
+        <div>
+          <button class="danger" id="modal-delete" style="display: none;">削除</button>
+        </div>
+        <div class="modal-footer-right">
+          <button id="modal-cancel">キャンセル</button>
+          <button class="primary" id="modal-save">保存する</button>
+        </div>
       </div>
     </div>
   </div>
 
   <script>
-    const STORAGE_KEY = "study_weekly_plan_2026_v1";
+    const STORAGE_KEY = "study_weekly_plan_2026_v2";
+    const TODAY_ISO = "2026-11-24";
 
-    // 学校終了時間（月10:30 / 火12:10 / 水16:10 / 木15:30 / 金16:30）を反映した初期週間テンプレート
+    const SCHOOL_BY_DOW = [
+      "休日・復習日",               // 0: 日
+      "10:30終了・午後たっぷり",   // 1: 月
+      "12:10終了・午後ゆとり",     // 2: 火
+      "16:10終了・軽め",           // 3: 水
+      "15:30終了",                 // 4: 木
+      "16:30終了・軽め",           // 5: 金
+      "休日・じっくり"             // 6: 土
+    ];
+
+    const DOW_NAMES = ["日曜日", "月曜日", "火曜日", "水曜日", "木曜日", "金曜日", "土曜日"];
+
+    function formatIsoDate(dateObj) {
+      const y = dateObj.getFullYear();
+      const m = String(dateObj.getMonth() + 1).padStart(2, "0");
+      const d = String(dateObj.getDate()).padStart(2, "0");
+      return `${y}-${m}-${d}`;
+    }
+
+    function parseIsoDate(iso) {
+      const [y, m, d] = iso.split("-").map(Number);
+      return new Date(y, m - 1, d);
+    }
+
+    function addDays(iso, days) {
+      const dt = parseIsoDate(iso);
+      dt.setDate(dt.getDate() + days);
+      return formatIsoDate(dt);
+    }
+
+    function formatDayLabel(iso) {
+      const dt = parseIsoDate(iso);
+      const m = dt.getMonth() + 1;
+      const d = dt.getDate();
+      const dow = DOW_NAMES[dt.getDay()];
+      return `${dow}（${m}/${d}）`;
+    }
+
+    function buildWeekDays(mondayIso, tasksMap = {}) {
+      const days = [];
+      for (let i = 0; i < 7; i++) {
+        const iso = addDays(mondayIso, i);
+        const dt = parseIsoDate(iso);
+        const dow = dt.getDay();
+        days.push({
+          id: "day-" + iso,
+          date: iso,
+          label: formatDayLabel(iso),
+          school: SCHOOL_BY_DOW[dow],
+          tasks: tasksMap[iso] || []
+        });
+      }
+      return days;
+    }
+
+    // 今週（2026-11-23 月曜〜）を第1週として初期データを作成
     function createInitialData() {
+      const w1Tasks = {
+        "2026-11-23": [
+          { id: "w1-mon-1", subject: "数学", book: "数学問題集", range: "例題 1〜8", done: true }
+        ],
+        "2026-11-24": [
+          { id: "w1-tue-1", subject: "英語", book: "英文法問題集", range: "p.10〜14（No.1〜15）", done: false },
+          { id: "w1-tue-2", subject: "理科/社会", book: "基礎問題精講", range: "No.1〜10", done: false }
+        ],
+        "2026-11-25": [
+          { id: "w1-wed-1", subject: "英語", book: "英単語帳", range: "No.1〜50", done: false }
+        ],
+        "2026-11-26": [
+          { id: "w1-thu-1", subject: "数学", book: "数学問題集", range: "例題 9〜14", done: false }
+        ],
+        "2026-11-27": [
+          { id: "w1-fri-1", subject: "英語", book: "英単語帳", range: "No.51〜100", done: false }
+        ],
+        "2026-11-28": [
+          { id: "w1-sat-1", subject: "数学", book: "数学問題集", range: "演習問題 1〜10", done: false },
+          { id: "w1-sat-2", subject: "理科/社会", book: "基礎問題精講", range: "No.11〜20", done: false }
+        ],
+        "2026-11-29": [
+          { id: "w1-sun-1", subject: "復習", book: "今週間違えた問題", range: "解き直し全問", done: false }
+        ]
+      };
+
+      const w2Tasks = {
+        "2026-11-30": [
+          { id: "w2-mon-1", subject: "数学", book: "数学問題集", range: "例題 15〜22", done: false },
+          { id: "w2-mon-2", subject: "英語", book: "長文問題集", range: "Unit 1〜2", done: false }
+        ],
+        "2026-12-01": [
+          { id: "w2-tue-1", subject: "理科/社会", book: "基礎問題精講", range: "No.21〜32", done: false }
+        ],
+        "2026-12-02": [
+          { id: "w2-wed-1", subject: "英語", book: "英単語帳", range: "No.101〜150", done: false }
+        ],
+        "2026-12-03": [
+          { id: "w2-thu-1", subject: "数学", book: "数学問題集", range: "例題 23〜28", done: false }
+        ],
+        "2026-12-04": [
+          { id: "w2-fri-1", subject: "英語", book: "英単語帳", range: "No.151〜200", done: false }
+        ],
+        "2026-12-05": [
+          { id: "w2-sat-1", subject: "数学", book: "数学問題集", range: "演習問題 11〜20", done: false }
+        ],
+        "2026-12-06": [
+          { id: "w2-sun-1", subject: "復習", book: "第2週の解き直し", range: "チェック問題すべて", done: false }
+        ]
+      };
+
       return {
         selectedWeekId: "week-1",
+        viewMode: "list",
+        calYear: 2026,
+        calMonth: 11, // 1-indexed (11 = 11月)
         weeks: [
           {
             id: "week-1",
-            title: "第1週（11/25〜11/29）",
-            days: [
-              { id: "d1", label: "水曜日（11/25）", school: "16:10終了・軽め", tasks: [
-                { id: "t1", subject: "英語", book: "英単語帳", range: "No.1〜50", done: false }
-              ]},
-              { id: "d2", label: "木曜日（11/26）", school: "15:30終了", tasks: [
-                { id: "t2", subject: "数学", book: "数学問題集", range: "例題 1〜6", done: false },
-                { id: "t3", subject: "英語", book: "英文法問題集", range: "p.10〜13（No.1〜15）", done: false }
-              ]},
-              { id: "d3", label: "金曜日（11/27）", school: "16:30終了・軽め", tasks: [
-                { id: "t4", subject: "英語", book: "英単語帳", range: "No.51〜100", done: false }
-              ]},
-              { id: "d4", label: "土曜日（11/28）", school: "休日・じっくり", tasks: [
-                { id: "t5", subject: "数学", book: "数学問題集", range: "演習問題 1〜10", done: false },
-                { id: "t6", subject: "理科/社会", book: "基礎問題精講", range: "第1章 No.1〜12", done: false }
-              ]},
-              { id: "d5", label: "日曜日（11/29）", school: "休日・復習日", tasks: [
-                { id: "t7", subject: "復習", book: "今週間違えた問題", range: "解き直し全問", done: false }
-              ]}
-            ]
+            title: "今週：第1週（11/23〜11/29）",
+            startDate: "2026-11-23",
+            days: buildWeekDays("2026-11-23", w1Tasks)
           },
           {
             id: "week-2",
-            title: "第2週（11/30〜12/6）",
-            days: [
-              { id: "w2-mon", label: "月曜日（11/30）", school: "10:30終了・午後たっぷり", tasks: [
-                { id: "w2-t1", subject: "数学", book: "数学問題集", range: "例題 7〜14", done: false },
-                { id: "w2-t2", subject: "英語", book: "長文問題集", range: "Unit 1〜2", done: false }
-              ]},
-              { id: "w2-tue", label: "火曜日（12/1）", school: "12:10終了・午後ゆとり", tasks: [
-                { id: "w2-t3", subject: "理科/社会", book: "基礎問題精講", range: "第2章 No.13〜24", done: false }
-              ]},
-              { id: "w2-wed", label: "水曜日（12/2）", school: "16:10終了・軽め", tasks: [
-                { id: "w2-t4", subject: "英語", book: "英単語帳", range: "No.101〜150", done: false }
-              ]},
-              { id: "w2-thu", label: "木曜日（12/3）", school: "15:30終了", tasks: [
-                { id: "w2-t5", subject: "数学", book: "数学問題集", range: "例題 15〜20", done: false }
-              ]},
-              { id: "w2-fri", label: "金曜日（12/4）", school: "16:30終了・軽め", tasks: [
-                { id: "w2-t6", subject: "英語", book: "英単語帳", range: "No.151〜200", done: false }
-              ]},
-              { id: "w2-sat", label: "土曜日（12/5）", school: "休日・じっくり", tasks: [
-                { id: "w2-t7", subject: "数学", book: "数学問題集", range: "演習問題 11〜20", done: false }
-              ]},
-              { id: "w2-sun", label: "日曜日（12/6）", school: "休日・復習日", tasks: [
-                { id: "w2-t8", subject: "復習", book: "第2週の解き直し", range: "チェック問題すべて", done: false }
-              ]}
-            ]
+            title: "来週：第2週（11/30〜12/6）",
+            startDate: "2026-11-30",
+            days: buildWeekDays("2026-11-30", w2Tasks)
           }
         ]
       };
     }
 
-    function createBlankWeek(weekNum) {
-      const uid = "w" + Date.now();
+    function createNextWeek(weeks) {
+      const lastWeek = weeks[weeks.length - 1];
+      const nextMonday = lastWeek && lastWeek.startDate
+        ? addDays(lastWeek.startDate, 7)
+        : "2026-12-07";
+      const sunday = addDays(nextMonday, 6);
+      const dtStart = parseIsoDate(nextMonday);
+      const dtEnd = parseIsoDate(sunday);
+      const num = weeks.length + 1;
+      const title = `第${num}週（${dtStart.getMonth() + 1}/${dtStart.getDate()}〜${dtEnd.getMonth() + 1}/${dtEnd.getDate()}）`;
+
       return {
-        id: uid,
-        title: `第${weekNum}週`,
-        days: [
-          { id: uid + "-mon", label: "月曜日", school: "10:30終了・午後たっぷり", tasks: [] },
-          { id: uid + "-tue", label: "火曜日", school: "12:10終了・午後ゆとり", tasks: [] },
-          { id: uid + "-wed", label: "水曜日", school: "16:10終了・軽め", tasks: [] },
-          { id: uid + "-thu", label: "木曜日", school: "15:30終了", tasks: [] },
-          { id: uid + "-fri", label: "金曜日", school: "16:30終了・軽め", tasks: [] },
-          { id: uid + "-sat", label: "土曜日", school: "休日・じっくり", tasks: [] },
-          { id: uid + "-sun", label: "日曜日", school: "休日・復習日", tasks: [] }
-        ]
+        id: "week-" + Date.now(),
+        title,
+        startDate: nextMonday,
+        days: buildWeekDays(nextMonday)
       };
     }
 
     let appData = loadData();
-    let modalContext = null; // { dayId, taskId | null }
+    let modalContext = null; // { dateIso, taskId | null }
 
     function loadData() {
       try {
@@ -615,7 +895,12 @@
         if (raw) {
           const parsed = JSON.parse(raw);
           if (parsed && Array.isArray(parsed.weeks) && parsed.weeks.length > 0) {
-            return parsed;
+            return {
+              viewMode: "list",
+              calYear: 2026,
+              calMonth: 11,
+              ...parsed
+            };
           }
         }
       } catch {}
@@ -628,6 +913,38 @@
 
     function getCurrentWeek() {
       return appData.weeks.find(w => w.id === appData.selectedWeekId) || appData.weeks[0];
+    }
+
+    // 指定したISO日付(YYYY-MM-DD)のdayオブジェクトを検索（なければ該当週を自動生成）
+    function findOrCreateDayByIso(iso) {
+      for (const w of appData.weeks) {
+        const found = w.days.find(d => d.date === iso);
+        if (found) return found;
+      }
+      // 月曜日を算出して新しい週を追加
+      const dt = parseIsoDate(iso);
+      const diffToMon = (dt.getDay() + 6) % 7;
+      const mondayIso = addDays(iso, -diffToMon);
+      const sundayIso = addDays(mondayIso, 6);
+      const sDt = parseIsoDate(mondayIso);
+      const eDt = parseIsoDate(sundayIso);
+      const newWeek = {
+        id: "week-" + Date.now(),
+        title: `追加週（${sDt.getMonth() + 1}/${sDt.getDate()}〜${eDt.getMonth() + 1}/${eDt.getDate()}）`,
+        startDate: mondayIso,
+        days: buildWeekDays(mondayIso)
+      };
+      appData.weeks.push(newWeek);
+      appData.weeks.sort((a, b) => (a.startDate || "").localeCompare(b.startDate || ""));
+      return newWeek.days.find(d => d.date === iso);
+    }
+
+    function getDayByIso(iso) {
+      for (const w of appData.weeks) {
+        const found = w.days.find(d => d.date === iso);
+        if (found) return found;
+      }
+      return null;
     }
 
     function showToast(msg) {
@@ -665,10 +982,41 @@
       document.getElementById("total-done-count").textContent = `${allDone} / ${allTasks.length}`;
     }
 
+    function toggleTaskByDate(iso, taskId) {
+      const day = getDayByIso(iso);
+      const task = day && day.tasks.find(t => t.id === taskId);
+      if (!task) return;
+
+      task.done = !task.done;
+      saveData();
+      render();
+      if (task.done) {
+        triggerConfetti();
+        showToast("完了！ナイス学習です");
+      }
+    }
+
+    function deleteTaskByDate(iso, taskId) {
+      const day = getDayByIso(iso);
+      if (!day) return;
+      day.tasks = day.tasks.filter(t => t.id !== taskId);
+      saveData();
+      render();
+      showToast("タスクを削除しました");
+    }
+
     function render() {
       const currentWeek = getCurrentWeek();
       appData.selectedWeekId = currentWeek.id;
       updateStats(currentWeek);
+
+      // ビュー切替ボタン状態
+      document.querySelectorAll(".view-btn").forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.view === appData.viewMode);
+      });
+
+      const weekControls = document.getElementById("week-controls");
+      weekControls.style.display = appData.viewMode === "month-cal" ? "none" : "block";
 
       // 週タブ描画
       const tabsEl = document.getElementById("week-tabs");
@@ -685,24 +1033,34 @@
         tabsEl.appendChild(btn);
       });
 
-      // 週タイトル入力欄
-      const titleInput = document.getElementById("week-title-input");
-      titleInput.value = currentWeek.title;
+      document.getElementById("week-title-input").value = currentWeek.title;
 
-      // 曜日カード描画
-      const daysContainer = document.getElementById("days-container");
-      daysContainer.innerHTML = "";
+      const mainView = document.getElementById("main-view-container");
+      mainView.innerHTML = "";
 
+      if (appData.viewMode === "list") {
+        renderListView(mainView, currentWeek);
+      } else if (appData.viewMode === "week-cal") {
+        renderWeekCalendarView(mainView, currentWeek);
+      } else {
+        renderMonthCalendarView(mainView);
+      }
+    }
+
+    // 1. リスト表示
+    function renderListView(container, currentWeek) {
       currentWeek.days.forEach(day => {
         const allDone = day.tasks.length > 0 && day.tasks.every(t => t.done);
+        const isToday = day.date === TODAY_ISO;
         const card = document.createElement("div");
-        card.className = "day-card" + (allDone ? " all-done" : "");
+        card.className = "day-card" + (allDone ? " all-done" : "") + (isToday ? " today-card" : "");
 
         const header = document.createElement("div");
         header.className = "day-header";
         header.innerHTML = `
           <div class="day-left">
             <span class="date-title">${day.label}</span>
+            ${isToday ? '<span class="today-badge">今日</span>' : ''}
             <span class="school-badge">${day.school}</span>
           </div>
         `;
@@ -710,7 +1068,7 @@
         const addBtn = document.createElement("button");
         addBtn.className = "add-task-btn primary";
         addBtn.textContent = "＋ 問題を追加";
-        addBtn.addEventListener("click", () => openModal(day.id, null));
+        addBtn.addEventListener("click", () => openModal(day.date, null));
         header.appendChild(addBtn);
         card.appendChild(header);
 
@@ -735,7 +1093,7 @@
             radio.checked = !!task.done;
             radio.addEventListener("click", (e) => {
               e.stopPropagation();
-              toggleTask(day.id, task.id);
+              toggleTaskByDate(day.date, task.id);
             });
 
             const subj = document.createElement("span");
@@ -749,17 +1107,18 @@
             book.className = "book-name";
             book.textContent = task.book || "問題集";
 
-            const range = document.createElement("span");
-            range.className = "problem-range";
-            range.textContent = task.range || "";
-
             content.appendChild(book);
-            if (task.range) content.appendChild(range);
+            if (task.range) {
+              const range = document.createElement("span");
+              range.className = "problem-range";
+              range.textContent = task.range;
+              content.appendChild(range);
+            }
 
             main.appendChild(radio);
             main.appendChild(subj);
             main.appendChild(content);
-            main.addEventListener("click", () => toggleTask(day.id, task.id));
+            main.addEventListener("click", () => toggleTaskByDate(day.date, task.id));
 
             const actions = document.createElement("div");
             actions.className = "task-actions";
@@ -769,7 +1128,7 @@
             editBtn.textContent = "編集";
             editBtn.addEventListener("click", (e) => {
               e.stopPropagation();
-              openModal(day.id, task.id);
+              openModal(day.date, task.id);
             });
 
             const delBtn = document.createElement("button");
@@ -777,7 +1136,7 @@
             delBtn.textContent = "削除";
             delBtn.addEventListener("click", (e) => {
               e.stopPropagation();
-              deleteTask(day.id, task.id);
+              deleteTaskByDate(day.date, task.id);
             });
 
             actions.appendChild(editBtn);
@@ -790,45 +1149,209 @@
         }
 
         card.appendChild(list);
-        daysContainer.appendChild(card);
+        container.appendChild(card);
       });
     }
 
-    function toggleTask(dayId, taskId) {
-      const week = getCurrentWeek();
-      const day = week.days.find(d => d.id === dayId);
-      const task = day && day.tasks.find(t => t.id === taskId);
-      if (!task) return;
+    // 2. 週間カレンダー表示（月〜日の7列）
+    function renderWeekCalendarView(container, currentWeek) {
+      const grid = document.createElement("div");
+      grid.className = "cal-grid";
 
-      task.done = !task.done;
-      saveData();
-      render();
-      if (task.done) {
-        triggerConfetti();
-        showToast("完了！ナイス学習です");
+      ["月", "火", "水", "木", "金", "土", "日"].forEach(w => {
+        const head = document.createElement("div");
+        head.className = "cal-weekday";
+        head.textContent = w;
+        grid.appendChild(head);
+      });
+
+      currentWeek.days.forEach(day => {
+        const dt = parseIsoDate(day.date);
+        const isToday = day.date === TODAY_ISO;
+        const allDone = day.tasks.length > 0 && day.tasks.every(t => t.done);
+
+        const cell = document.createElement("div");
+        cell.className = "cal-cell" + (isToday ? " today-cell" : "") + (allDone ? " all-done" : "");
+
+        const cellHead = document.createElement("div");
+        cellHead.className = "cal-cell-head";
+        cellHead.innerHTML = `
+          <span class="cal-date-num">${dt.getMonth() + 1}/${dt.getDate()}${isToday ? " (今日)" : ""}</span>
+        `;
+
+        const addMini = document.createElement("button");
+        addMini.className = "cal-add-mini";
+        addMini.textContent = "＋追加";
+        addMini.addEventListener("click", () => openModal(day.date, null));
+        cellHead.appendChild(addMini);
+
+        const school = document.createElement("div");
+        school.className = "cal-school";
+        school.textContent = day.school;
+
+        const tasksBox = document.createElement("div");
+        tasksBox.className = "cal-tasks";
+
+        day.tasks.forEach(task => {
+          tasksBox.appendChild(createCalendarTaskPill(day.date, task));
+        });
+
+        cell.appendChild(cellHead);
+        cell.appendChild(school);
+        cell.appendChild(tasksBox);
+        grid.appendChild(cell);
+      });
+
+      container.appendChild(grid);
+    }
+
+    // 3. 月間カレンダー表示
+    function renderMonthCalendarView(container) {
+      const wrapper = document.createElement("div");
+      wrapper.className = "card";
+
+      const nav = document.createElement("div");
+      nav.className = "cal-nav";
+
+      const prevBtn = document.createElement("button");
+      prevBtn.textContent = "← 前月";
+      prevBtn.addEventListener("click", () => {
+        if (appData.calMonth === 1) {
+          appData.calMonth = 12;
+          appData.calYear -= 1;
+        } else {
+          appData.calMonth -= 1;
+        }
+        saveData();
+        render();
+      });
+
+      const title = document.createElement("div");
+      title.className = "cal-month-title";
+      title.textContent = `${appData.calYear}年 ${appData.calMonth}月`;
+
+      const nextBtn = document.createElement("button");
+      nextBtn.textContent = "次月 →";
+      nextBtn.addEventListener("click", () => {
+        if (appData.calMonth === 12) {
+          appData.calMonth = 1;
+          appData.calYear += 1;
+        } else {
+          appData.calMonth += 1;
+        }
+        saveData();
+        render();
+      });
+
+      nav.appendChild(prevBtn);
+      nav.appendChild(title);
+      nav.appendChild(nextBtn);
+      wrapper.appendChild(nav);
+
+      const grid = document.createElement("div");
+      grid.className = "cal-grid";
+
+      ["月", "火", "水", "木", "金", "土", "日"].forEach(w => {
+        const head = document.createElement("div");
+        head.className = "cal-weekday";
+        head.textContent = w;
+        grid.appendChild(head);
+      });
+
+      // 月曜始まりで前月分・次月分を埋める
+      const firstDay = new Date(appData.calYear, appData.calMonth - 1, 1);
+      const startOffset = (firstDay.getDay() + 6) % 7;
+      const startDate = new Date(appData.calYear, appData.calMonth - 1, 1 - startOffset);
+
+      for (let i = 0; i < 42; i++) {
+        const cellDate = new Date(startDate);
+        cellDate.setDate(startDate.getDate() + i);
+        const iso = formatIsoDate(cellDate);
+        const isCurrentMonth = (cellDate.getMonth() + 1) === appData.calMonth;
+        const isToday = iso === TODAY_ISO;
+        const dayObj = getDayByIso(iso);
+        const tasks = dayObj ? dayObj.tasks : [];
+        const allDone = tasks.length > 0 && tasks.every(t => t.done);
+
+        // 6週目がすべて翌月なら描画を終了
+        if (i >= 35 && !isCurrentMonth && i % 7 === 0) break;
+
+        const cell = document.createElement("div");
+        cell.className = "cal-cell"
+          + (!isCurrentMonth ? " outside" : "")
+          + (isToday ? " today-cell" : "")
+          + (allDone ? " all-done" : "");
+
+        const head = document.createElement("div");
+        head.className = "cal-cell-head";
+        head.innerHTML = `<span class="cal-date-num">${cellDate.getDate()}日${isToday ? " (今日)" : ""}</span>`;
+
+        const addMini = document.createElement("button");
+        addMini.className = "cal-add-mini";
+        addMini.textContent = "＋";
+        addMini.title = "問題を追加";
+        addMini.addEventListener("click", () => openModal(iso, null));
+        head.appendChild(addMini);
+
+        const tasksBox = document.createElement("div");
+        tasksBox.className = "cal-tasks";
+        tasks.forEach(task => {
+          tasksBox.appendChild(createCalendarTaskPill(iso, task));
+        });
+
+        cell.appendChild(head);
+        cell.appendChild(tasksBox);
+        grid.appendChild(cell);
       }
+
+      wrapper.appendChild(grid);
+      container.appendChild(wrapper);
     }
 
-    function deleteTask(dayId, taskId) {
-      const week = getCurrentWeek();
-      const day = week.days.find(d => d.id === dayId);
-      if (!day) return;
-      day.tasks = day.tasks.filter(t => t.id !== taskId);
-      saveData();
-      render();
-      showToast("タスクを削除しました");
+    function createCalendarTaskPill(iso, task) {
+      const pill = document.createElement("div");
+      pill.className = "cal-pill" + (task.done ? " done" : "");
+      pill.title = "クリックで完了 / ダブルクリックで編集";
+
+      const radio = document.createElement("input");
+      radio.type = "radio";
+      radio.checked = !!task.done;
+      radio.addEventListener("click", (e) => {
+        e.stopPropagation();
+        toggleTaskByDate(iso, task.id);
+      });
+
+      const txt = document.createElement("span");
+      txt.className = "cal-pill-text";
+      txt.textContent = `[${task.subject}] ${task.book}${task.range ? " (" + task.range + ")" : ""}`;
+
+      pill.addEventListener("click", () => toggleTaskByDate(iso, task.id));
+      pill.addEventListener("dblclick", (e) => {
+        e.stopPropagation();
+        openModal(iso, task.id);
+      });
+
+      pill.appendChild(radio);
+      pill.appendChild(txt);
+      return pill;
     }
 
-    function openModal(dayId, taskId) {
-      modalContext = { dayId, taskId };
-      const week = getCurrentWeek();
-      const day = week.days.find(d => d.id === dayId);
-      const task = taskId ? day.tasks.find(t => t.id === taskId) : null;
+    // モーダル制御
+    function openModal(dateIso, taskId) {
+      modalContext = { dateIso, taskId };
+      const day = getDayByIso(dateIso);
+      const task = (day && taskId) ? day.tasks.find(t => t.id === taskId) : null;
 
-      document.getElementById("modal-title").textContent = task ? "問題集・番号を編集" : "勉強タスクを追加";
+      document.getElementById("modal-title").textContent = task
+        ? `問題集・番号を編集（${formatDayLabel(dateIso)}）`
+        : `勉強タスクを追加（${formatDayLabel(dateIso)}）`;
       document.getElementById("input-subject").value = task ? task.subject : "";
       document.getElementById("input-book").value = task ? task.book : "";
       document.getElementById("input-range").value = task ? task.range : "";
+
+      const delBtn = document.getElementById("modal-delete");
+      delBtn.style.display = task ? "inline-flex" : "none";
+
       document.getElementById("task-modal").classList.add("open");
       document.getElementById("input-subject").focus();
     }
@@ -843,15 +1366,19 @@
       if (e.target.id === "task-modal") closeModal();
     });
 
+    document.getElementById("modal-delete").addEventListener("click", () => {
+      if (!modalContext || !modalContext.taskId) return;
+      deleteTaskByDate(modalContext.dateIso, modalContext.taskId);
+      closeModal();
+    });
+
     document.getElementById("modal-save").addEventListener("click", () => {
       if (!modalContext) return;
       const subject = document.getElementById("input-subject").value.trim() || "勉強";
       const book = document.getElementById("input-book").value.trim() || "問題集";
       const range = document.getElementById("input-range").value.trim();
 
-      const week = getCurrentWeek();
-      const day = week.days.find(d => d.id === modalContext.dayId);
-      if (!day) return;
+      const day = findOrCreateDayByIso(modalContext.dateIso);
 
       if (modalContext.taskId) {
         const task = day.tasks.find(t => t.id === modalContext.taskId);
@@ -877,6 +1404,15 @@
       render();
     });
 
+    // イベント登録
+    document.querySelectorAll(".view-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        appData.viewMode = btn.dataset.view;
+        saveData();
+        render();
+      });
+    });
+
     document.getElementById("week-title-input").addEventListener("change", (e) => {
       const week = getCurrentWeek();
       week.title = e.target.value.trim() || week.title;
@@ -886,12 +1422,12 @@
     });
 
     document.getElementById("add-week-btn").addEventListener("click", () => {
-      const newWeek = createBlankWeek(appData.weeks.length + 1);
+      const newWeek = createNextWeek(appData.weeks);
       appData.weeks.push(newWeek);
       appData.selectedWeekId = newWeek.id;
       saveData();
       render();
-      showToast("新しい週を追加しました");
+      showToast("次の週を追加しました");
     });
 
     document.getElementById("delete-week-btn").addEventListener("click", () => {
@@ -927,7 +1463,7 @@
         try {
           const parsed = JSON.parse(reader.result);
           if (parsed && Array.isArray(parsed.weeks) && parsed.weeks.length > 0) {
-            appData = parsed;
+            appData = { viewMode: "list", calYear: 2026, calMonth: 11, ...parsed };
             saveData();
             render();
             showToast("計画ファイルを読み込みました");
@@ -941,7 +1477,7 @@
     });
 
     document.getElementById("reset-btn").addEventListener("click", () => {
-      if (confirm("編集内容と進捗を初期状態に戻しますか？")) {
+      if (confirm("編集内容と進捗を今週スタートの初期状態に戻しますか？")) {
         appData = createInitialData();
         saveData();
         render();
