@@ -46,6 +46,7 @@
       display: flex;
       gap: 8px;
       margin-bottom: 10px;
+      flex-wrap: wrap;
     }
 
     .nav-links a {
@@ -63,16 +64,8 @@
       color: #1e3a8a;
     }
 
-    h1 {
-      margin: 0 0 4px;
-      font-size: 1.45rem;
-    }
-
-    .subtitle {
-      margin: 0;
-      opacity: 0.92;
-      font-size: 0.9rem;
-    }
+    h1 { margin: 0 0 4px; font-size: 1.45rem; }
+    .subtitle { margin: 0; opacity: 0.92; font-size: 0.9rem; }
 
     .toolbar {
       display: flex;
@@ -81,7 +74,7 @@
       margin-top: 14px;
     }
 
-    button, .file-label {
+    button {
       background: #fff;
       color: var(--text);
       border: 1px solid var(--border);
@@ -96,7 +89,7 @@
       transition: transform 0.12s ease, background 0.15s ease;
     }
 
-    button:hover, .file-label:hover {
+    button:hover {
       background: #f1f5f9;
       transform: translateY(-1px);
     }
@@ -107,9 +100,7 @@
       border-color: var(--accent);
     }
 
-    button.primary:hover {
-      background: #1d4ed8;
-    }
+    button.primary:hover { background: #1d4ed8; }
 
     button.danger {
       color: var(--danger);
@@ -138,12 +129,8 @@
       color: var(--accent);
     }
 
-    .stat-label {
-      font-size: 0.8rem;
-      color: var(--muted);
-    }
+    .stat-label { font-size: 0.8rem; color: var(--muted); }
 
-    /* ビュー切り替えバー */
     .control-row {
       display: flex;
       justify-content: space-between;
@@ -176,7 +163,6 @@
       box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
     }
 
-    /* 週選択タブ */
     .week-bar {
       display: flex;
       flex-wrap: wrap;
@@ -225,7 +211,7 @@
       color: var(--text);
       padding: 4px 8px;
       border-radius: 6px;
-      width: 240px;
+      width: 260px;
     }
 
     .week-title-input:hover, .week-title-input:focus {
@@ -234,14 +220,12 @@
       outline: none;
     }
 
-    /* リスト表示 */
     .day-card {
       background: var(--card);
       border: 1px solid var(--border);
       border-radius: 12px;
       padding: 14px 16px;
       margin-bottom: 12px;
-      transition: border-color 0.2s ease, background 0.2s ease;
     }
 
     .day-card.today-card {
@@ -272,10 +256,7 @@
       flex-wrap: wrap;
     }
 
-    .date-title {
-      font-weight: 700;
-      font-size: 1rem;
-    }
+    .date-title { font-weight: 700; font-size: 1rem; }
 
     .today-badge {
       font-size: 0.72rem;
@@ -295,17 +276,13 @@
       font-weight: 600;
     }
 
-    .add-task-btn {
-      font-size: 0.78rem;
-      padding: 4px 10px;
-      border-radius: 6px;
+    .day-actions {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
     }
 
-    .task-list {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
+    .task-list { display: flex; flex-direction: column; gap: 8px; }
 
     .task-item {
       display: flex;
@@ -315,7 +292,6 @@
       padding: 8px 10px;
       border-radius: 8px;
       background: #f8fafc;
-      transition: background 0.15s ease;
     }
 
     .task-item:hover { background: #f1f5f9; }
@@ -338,16 +314,6 @@
       flex-shrink: 0;
     }
 
-    .subject-tag {
-      font-size: 0.72rem;
-      padding: 2px 7px;
-      border-radius: 6px;
-      background: #e2e8f0;
-      color: #1e293b;
-      font-weight: 700;
-      flex-shrink: 0;
-    }
-
     .task-content {
       display: flex;
       flex-wrap: wrap;
@@ -356,10 +322,7 @@
       min-width: 0;
     }
 
-    .book-name {
-      font-weight: 600;
-      font-size: 0.92rem;
-    }
+    .book-name { font-weight: 700; font-size: 0.92rem; }
 
     .problem-range {
       font-size: 0.84rem;
@@ -377,25 +340,11 @@
       background: transparent;
     }
 
-    .task-actions {
-      display: flex;
-      gap: 4px;
-      flex-shrink: 0;
-    }
+    .task-actions { display: flex; gap: 4px; flex-shrink: 0; }
+    .icon-btn { padding: 4px 8px; font-size: 0.75rem; border-radius: 6px; }
+    .empty-msg { font-size: 0.84rem; color: var(--muted); padding: 4px 2px; }
 
-    .icon-btn {
-      padding: 4px 8px;
-      font-size: 0.75rem;
-      border-radius: 6px;
-    }
-
-    .empty-msg {
-      font-size: 0.84rem;
-      color: var(--muted);
-      padding: 4px 2px;
-    }
-
-    /* カレンダー共通（週間7列 / 月間7列） */
+    /* カレンダー表示 */
     .cal-nav {
       display: flex;
       justify-content: space-between;
@@ -403,10 +352,7 @@
       margin-bottom: 12px;
     }
 
-    .cal-month-title {
-      font-size: 1.15rem;
-      font-weight: 700;
-    }
+    .cal-month-title { font-size: 1.15rem; font-weight: 700; }
 
     .cal-grid {
       display: grid;
@@ -433,20 +379,9 @@
       gap: 6px;
     }
 
-    .cal-cell.outside {
-      background: #f1f5f9;
-      opacity: 0.55;
-    }
-
-    .cal-cell.today-cell {
-      border-color: var(--today-border);
-      background: #fffef5;
-    }
-
-    .cal-cell.all-done {
-      border-color: #86efac;
-      background: #f8fff9;
-    }
+    .cal-cell.outside { background: #f1f5f9; opacity: 0.55; }
+    .cal-cell.today-cell { border-color: var(--today-border); background: #fffef5; }
+    .cal-cell.all-done { border-color: #86efac; background: #f8fff9; }
 
     .cal-cell-head {
       display: flex;
@@ -455,10 +390,7 @@
       gap: 4px;
     }
 
-    .cal-date-num {
-      font-weight: 700;
-      font-size: 0.86rem;
-    }
+    .cal-date-num { font-weight: 700; font-size: 0.86rem; }
 
     .cal-add-mini {
       padding: 1px 6px;
@@ -469,20 +401,7 @@
       border: none;
     }
 
-    .cal-school {
-      font-size: 0.7rem;
-      color: var(--muted);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .cal-tasks {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      flex: 1;
-    }
+    .cal-tasks { display: flex; flex-direction: column; gap: 4px; flex: 1; }
 
     .cal-pill {
       display: flex;
@@ -495,10 +414,6 @@
       font-size: 0.75rem;
       cursor: pointer;
       line-height: 1.3;
-    }
-
-    .cal-pill:hover {
-      background: #eff6ff;
     }
 
     .cal-pill.done {
@@ -516,23 +431,11 @@
       flex-shrink: 0;
     }
 
-    .cal-pill-text {
-      word-break: break-word;
-    }
-
     @media (max-width: 780px) {
-      .cal-grid {
-        grid-template-columns: 1fr;
-      }
-      .cal-weekday {
-        display: none;
-      }
-      .cal-cell {
-        min-height: auto;
-      }
-      .cal-cell.outside {
-        display: none;
-      }
+      .cal-grid { grid-template-columns: 1fr; }
+      .cal-weekday { display: none; }
+      .cal-cell { min-height: auto; }
+      .cal-cell.outside { display: none; }
     }
 
     /* モーダル */
@@ -552,17 +455,13 @@
     .modal {
       background: #fff;
       border-radius: 14px;
-      max-width: 440px;
+      max-width: 520px;
       width: 100%;
       padding: 20px;
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.18);
     }
 
-    .modal h2 {
-      margin: 0 0 14px;
-      font-size: 1.15rem;
-    }
-
+    .modal h2 { margin: 0 0 12px; font-size: 1.15rem; }
     .form-group { margin-bottom: 12px; }
 
     .form-group label {
@@ -573,12 +472,19 @@
       color: var(--muted);
     }
 
-    .form-group input {
+    .form-group input, .form-group textarea {
       width: 100%;
       padding: 8px 10px;
       border: 1px solid var(--border);
       border-radius: 8px;
-      font-size: 0.92rem;
+      font-size: 0.9rem;
+      font-family: inherit;
+    }
+
+    .form-group textarea {
+      min-height: 180px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.8rem;
     }
 
     .modal-footer {
@@ -586,15 +492,11 @@
       justify-content: space-between;
       align-items: center;
       gap: 8px;
-      margin-top: 16px;
+      margin-top: 14px;
     }
 
-    .modal-footer-right {
-      display: flex;
-      gap: 8px;
-    }
+    .modal-footer-right { display: flex; gap: 8px; }
 
-    /* 完了エフェクト用 */
     #confetti-layer {
       position: fixed;
       inset: 0;
@@ -632,10 +534,7 @@
       z-index: 10000;
     }
 
-    .toast.show {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    .toast.show { opacity: 1; transform: translateY(0); }
   </style>
 </head>
 <body>
@@ -647,16 +546,15 @@
       <nav class="nav-links">
         <a href="index.html">清掃・生活ルーティン</a>
         <a href="index2.html" class="active">週間＆カレンダー勉強計画</a>
+        <a href="study.html">デイタイムライン（時間比例）</a>
       </nav>
       <h1>週間勉強計画＆問題集トラッカー</h1>
-      <p class="subtitle">今週（11/23〜）スタート｜リスト表示・週間カレンダー・月間カレンダー切り替え対応</p>
+      <p class="subtitle">問題集ベースでシンプル管理｜日の追加・AI連携コピー・JSONコピペ反映対応</p>
       <div class="toolbar">
         <button class="primary" id="add-week-btn">＋ 次の週を追加</button>
-        <button id="export-btn">計画・進捗をJSON保存</button>
-        <label class="file-label">
-          JSON読み込み
-          <input type="file" id="import-file" accept=".json,application/json" hidden />
-        </label>
+        <button id="open-paste-json-btn">JSONを貼り付けて反映</button>
+        <button id="open-copy-json-btn">全JSONをコピー</button>
+        <button id="export-btn">JSONダウンロード</button>
         <button id="reset-btn">初期データに戻す</button>
       </div>
     </div>
@@ -685,11 +583,10 @@
         <button class="view-btn" data-view="month-cal">月間カレンダー</button>
       </div>
       <div style="font-size: 0.82rem; color: var(--muted);">
-        ※カレンダー上の問題をクリックで完了、ダブルクリック（または編集ボタン）で番号変更
+        ※「AI用コピー」を押してチャットに貼ると、今日の項目からデイタイムライン用JSONを作れます
       </div>
     </section>
 
-    <!-- 週間ビュー用コントロール -->
     <div id="week-controls">
       <section class="week-bar" id="week-tabs"></section>
       <section class="card week-header-card">
@@ -697,29 +594,27 @@
           <input type="text" id="week-title-input" class="week-title-input" aria-label="週のタイトル" />
           <span style="font-size: 0.78rem; color: var(--muted);">※タイトルはクリックで編集可</span>
         </div>
-        <button class="danger" id="delete-week-btn">この週を削除</button>
+        <div class="day-actions">
+          <button class="primary" id="add-day-btn">＋ 日を追加</button>
+          <button class="danger" id="delete-week-btn">この週を削除</button>
+        </div>
       </section>
     </div>
 
-    <!-- メインコンテンツ領域 -->
     <section id="main-view-container"></section>
   </main>
 
-  <!-- 追加・編集モーダル -->
+  <!-- 問題集タスク追加・編集モーダル（教科指定なし・問題集のみ） -->
   <div class="modal-backdrop" id="task-modal">
     <div class="modal">
-      <h2 id="modal-title">勉強タスクを追加</h2>
-      <div class="form-group">
-        <label for="input-subject">科目・ジャンル</label>
-        <input type="text" id="input-subject" placeholder="例：数学、英語、物理、過去問" />
-      </div>
+      <h2 id="modal-title">問題集タスクを追加</h2>
       <div class="form-group">
         <label for="input-book">問題集・参考書名</label>
-        <input type="text" id="input-book" placeholder="例：チャート式、システム英単語" />
+        <input type="text" id="input-book" placeholder="例：大学生の初等力学、TOEFL3800 Rank3、線形代数" />
       </div>
       <div class="form-group">
-        <label for="input-range">問題番号・ページ範囲</label>
-        <input type="text" id="input-range" placeholder="例：No.1〜25 / p.40〜48 / 例題12〜18" />
+        <label for="input-range">番号・メモ（任意）</label>
+        <input type="text" id="input-range" placeholder="例：51〜54 / 後ろから20分 / 3問" />
       </div>
       <div class="modal-footer">
         <div>
@@ -733,18 +628,62 @@
     </div>
   </div>
 
+  <!-- 日追加モーダル -->
+  <div class="modal-backdrop" id="day-modal">
+    <div class="modal">
+      <h2>この週に日を追加</h2>
+      <div class="form-group">
+        <label for="d-date">日付（YYYY-MM-DD）</label>
+        <input type="text" id="d-date" placeholder="2026-11-30" />
+      </div>
+      <div class="form-group">
+        <label for="d-label">表示ラベル</label>
+        <input type="text" id="d-label" placeholder="月曜日（11/30）" />
+      </div>
+      <div class="form-group">
+        <label for="d-school">メモ・時間割補足</label>
+        <input type="text" id="d-school" placeholder="例：09:00-10:30 数値計算(自習可)" />
+      </div>
+      <div class="modal-footer">
+        <div></div>
+        <div class="modal-footer-right">
+          <button id="d-cancel">キャンセル</button>
+          <button class="primary" id="d-save">追加する</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JSON貼り付け・出力モーダル -->
+  <div class="modal-backdrop" id="json-modal">
+    <div class="modal">
+      <h2 id="json-modal-title">JSONの貼り付け・出力</h2>
+      <div class="form-group">
+        <label id="json-modal-label" for="json-textarea">AIに作らせたJSONをここに貼り付けて「反映する」を押してください</label>
+        <textarea id="json-textarea" placeholder='{"weeks":[...]}'></textarea>
+      </div>
+      <div class="modal-footer">
+        <button id="json-copy-btn">テキストをコピー</button>
+        <div class="modal-footer-right">
+          <button id="json-cancel">閉じる</button>
+          <button class="primary" id="json-apply">反映する</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script>
-    const STORAGE_KEY = "study_weekly_plan_2026_v2";
+    const STORAGE_KEY = "study_weekly_plan_2026_v3";
     const TODAY_ISO = "2026-11-24";
 
     const SCHOOL_BY_DOW = [
-      "休日・復習日",               // 0: 日
-      "10:30終了・午後たっぷり",   // 1: 月
-      "12:10終了・午後ゆとり",     // 2: 火
-      "16:10終了・軽め",           // 3: 水
-      "15:30終了",                 // 4: 木
-      "16:30終了・軽め",           // 5: 金
-      "休日・じっくり"             // 6: 土
+      "休日・復習日",
+      "09:00-10:30 数値計算(自習可)",
+      "1限:計算機言語処理(単語可) / 2限:情報AL(不可)",
+      "2限:英語(自習可) / 午後:実験・講義 16:10終了",
+      "1限:応数(自習可) / 2限:NW(不可) / 3限:応物(自習可)",
+      "午前:自宅自習可 / 13:00-16:10 情報工学実験",
+      "休日・じっくり"
     ];
 
     const DOW_NAMES = ["日曜日", "月曜日", "火曜日", "水曜日", "木曜日", "金曜日", "土曜日"];
@@ -757,8 +696,8 @@
     }
 
     function parseIsoDate(iso) {
-      const [y, m, d] = iso.split("-").map(Number);
-      return new Date(y, m - 1, d);
+      const [y, m, d] = (iso || TODAY_ISO).split("-").map(Number);
+      return new Date(y, (m || 11) - 1, d || 24);
     }
 
     function addDays(iso, days) {
@@ -769,10 +708,7 @@
 
     function formatDayLabel(iso) {
       const dt = parseIsoDate(iso);
-      const m = dt.getMonth() + 1;
-      const d = dt.getDate();
-      const dow = DOW_NAMES[dt.getDay()];
-      return `${dow}（${m}/${d}）`;
+      return `${DOW_NAMES[dt.getDay()]}（${dt.getMonth() + 1}/${dt.getDate()}）`;
     }
 
     function buildWeekDays(mondayIso, tasksMap = {}) {
@@ -780,68 +716,30 @@
       for (let i = 0; i < 7; i++) {
         const iso = addDays(mondayIso, i);
         const dt = parseIsoDate(iso);
-        const dow = dt.getDay();
         days.push({
           id: "day-" + iso,
           date: iso,
           label: formatDayLabel(iso),
-          school: SCHOOL_BY_DOW[dow],
+          school: SCHOOL_BY_DOW[dt.getDay()],
           tasks: tasksMap[iso] || []
         });
       }
       return days;
     }
 
-    // 今週（2026-11-23 月曜〜）を第1週として初期データを作成
     function createInitialData() {
       const w1Tasks = {
-        "2026-11-23": [
-          { id: "w1-mon-1", subject: "数学", book: "数学問題集", range: "例題 1〜8", done: true }
-        ],
         "2026-11-24": [
-          { id: "w1-tue-1", subject: "英語", book: "英文法問題集", range: "p.10〜14（No.1〜15）", done: false },
-          { id: "w1-tue-2", subject: "理科/社会", book: "基礎問題精講", range: "No.1〜10", done: false }
+          { id: "t-1124-p51", book: "大学生の初等力学", range: "51", done: false },
+          { id: "t-1124-p52", book: "大学生の初等力学", range: "52", done: false },
+          { id: "t-1124-p53", book: "大学生の初等力学", range: "53", done: false },
+          { id: "t-1124-p54", book: "大学生の初等力学", range: "54", done: false },
+          { id: "t-1124-en", book: "TOEFLテスト英単語3800 Rank3（後ろから）", range: "20分", done: false }
         ],
         "2026-11-25": [
-          { id: "w1-wed-1", subject: "英語", book: "英単語帳", range: "No.1〜50", done: false }
-        ],
-        "2026-11-26": [
-          { id: "w1-thu-1", subject: "数学", book: "数学問題集", range: "例題 9〜14", done: false }
-        ],
-        "2026-11-27": [
-          { id: "w1-fri-1", subject: "英語", book: "英単語帳", range: "No.51〜100", done: false }
-        ],
-        "2026-11-28": [
-          { id: "w1-sat-1", subject: "数学", book: "数学問題集", range: "演習問題 1〜10", done: false },
-          { id: "w1-sat-2", subject: "理科/社会", book: "基礎問題精講", range: "No.11〜20", done: false }
-        ],
-        "2026-11-29": [
-          { id: "w1-sun-1", subject: "復習", book: "今週間違えた問題", range: "解き直し全問", done: false }
-        ]
-      };
-
-      const w2Tasks = {
-        "2026-11-30": [
-          { id: "w2-mon-1", subject: "数学", book: "数学問題集", range: "例題 15〜22", done: false },
-          { id: "w2-mon-2", subject: "英語", book: "長文問題集", range: "Unit 1〜2", done: false }
-        ],
-        "2026-12-01": [
-          { id: "w2-tue-1", subject: "理科/社会", book: "基礎問題精講", range: "No.21〜32", done: false }
-        ],
-        "2026-12-02": [
-          { id: "w2-wed-1", subject: "英語", book: "英単語帳", range: "No.101〜150", done: false }
-        ],
-        "2026-12-03": [
-          { id: "w2-thu-1", subject: "数学", book: "数学問題集", range: "例題 23〜28", done: false }
-        ],
-        "2026-12-04": [
-          { id: "w2-fri-1", subject: "英語", book: "英単語帳", range: "No.151〜200", done: false }
-        ],
-        "2026-12-05": [
-          { id: "w2-sat-1", subject: "数学", book: "数学問題集", range: "演習問題 11〜20", done: false }
-        ],
-        "2026-12-06": [
-          { id: "w2-sun-1", subject: "復習", book: "第2週の解き直し", range: "チェック問題すべて", done: false }
+          { id: "t-1125-p55", book: "大学生の初等力学", range: "55", done: false },
+          { id: "t-1125-p56", book: "大学生の初等力学", range: "56", done: false },
+          { id: "t-1125-en", book: "TOEFLテスト英単語3800 Rank3（後ろから）", range: "20分", done: false }
         ]
       };
 
@@ -849,19 +747,13 @@
         selectedWeekId: "week-1",
         viewMode: "list",
         calYear: 2026,
-        calMonth: 11, // 1-indexed (11 = 11月)
+        calMonth: 11,
         weeks: [
           {
             id: "week-1",
             title: "今週：第1週（11/23〜11/29）",
             startDate: "2026-11-23",
             days: buildWeekDays("2026-11-23", w1Tasks)
-          },
-          {
-            id: "week-2",
-            title: "来週：第2週（11/30〜12/6）",
-            startDate: "2026-11-30",
-            days: buildWeekDays("2026-11-30", w2Tasks)
           }
         ]
       };
@@ -871,23 +763,22 @@
       const lastWeek = weeks[weeks.length - 1];
       const nextMonday = lastWeek && lastWeek.startDate
         ? addDays(lastWeek.startDate, 7)
-        : "2026-12-07";
+        : "2026-11-30";
       const sunday = addDays(nextMonday, 6);
       const dtStart = parseIsoDate(nextMonday);
       const dtEnd = parseIsoDate(sunday);
       const num = weeks.length + 1;
-      const title = `第${num}週（${dtStart.getMonth() + 1}/${dtStart.getDate()}〜${dtEnd.getMonth() + 1}/${dtEnd.getDate()}）`;
 
       return {
         id: "week-" + Date.now(),
-        title,
+        title: `第${num}週（${dtStart.getMonth() + 1}/${dtStart.getDate()}〜${dtEnd.getMonth() + 1}/${dtEnd.getDate()}）`,
         startDate: nextMonday,
         days: buildWeekDays(nextMonday)
       };
     }
 
     let appData = loadData();
-    let modalContext = null; // { dateIso, taskId | null }
+    let modalContext = null;
 
     function loadData() {
       try {
@@ -895,12 +786,7 @@
         if (raw) {
           const parsed = JSON.parse(raw);
           if (parsed && Array.isArray(parsed.weeks) && parsed.weeks.length > 0) {
-            return {
-              viewMode: "list",
-              calYear: 2026,
-              calMonth: 11,
-              ...parsed
-            };
+            return { viewMode: "list", calYear: 2026, calMonth: 11, ...parsed };
           }
         }
       } catch {}
@@ -915,36 +801,28 @@
       return appData.weeks.find(w => w.id === appData.selectedWeekId) || appData.weeks[0];
     }
 
-    // 指定したISO日付(YYYY-MM-DD)のdayオブジェクトを検索（なければ該当週を自動生成）
-    function findOrCreateDayByIso(iso) {
-      for (const w of appData.weeks) {
-        const found = w.days.find(d => d.date === iso);
-        if (found) return found;
-      }
-      // 月曜日を算出して新しい週を追加
-      const dt = parseIsoDate(iso);
-      const diffToMon = (dt.getDay() + 6) % 7;
-      const mondayIso = addDays(iso, -diffToMon);
-      const sundayIso = addDays(mondayIso, 6);
-      const sDt = parseIsoDate(mondayIso);
-      const eDt = parseIsoDate(sundayIso);
-      const newWeek = {
-        id: "week-" + Date.now(),
-        title: `追加週（${sDt.getMonth() + 1}/${sDt.getDate()}〜${eDt.getMonth() + 1}/${eDt.getDate()}）`,
-        startDate: mondayIso,
-        days: buildWeekDays(mondayIso)
-      };
-      appData.weeks.push(newWeek);
-      appData.weeks.sort((a, b) => (a.startDate || "").localeCompare(b.startDate || ""));
-      return newWeek.days.find(d => d.date === iso);
-    }
-
     function getDayByIso(iso) {
       for (const w of appData.weeks) {
         const found = w.days.find(d => d.date === iso);
         if (found) return found;
       }
       return null;
+    }
+
+    function findOrCreateDayByIso(iso) {
+      const existing = getDayByIso(iso);
+      if (existing) return existing;
+      const week = getCurrentWeek();
+      const newDay = {
+        id: "day-" + iso + "-" + Date.now(),
+        date: iso,
+        label: formatDayLabel(iso),
+        school: SCHOOL_BY_DOW[parseIsoDate(iso).getDay()],
+        tasks: []
+      };
+      week.days.push(newDay);
+      week.days.sort((a, b) => (a.date || "").localeCompare(b.date || ""));
+      return newDay;
     }
 
     function showToast(msg) {
@@ -970,11 +848,11 @@
     }
 
     function updateStats(currentWeek) {
-      const weekTasks = currentWeek.days.flatMap(d => d.tasks);
+      const weekTasks = currentWeek.days.flatMap(d => d.tasks || []);
       const weekDone = weekTasks.filter(t => t.done).length;
       const weekRate = weekTasks.length === 0 ? 0 : Math.round((weekDone / weekTasks.length) * 100);
 
-      const allTasks = appData.weeks.flatMap(w => w.days.flatMap(d => d.tasks));
+      const allTasks = appData.weeks.flatMap(w => w.days.flatMap(d => d.tasks || []));
       const allDone = allTasks.filter(t => t.done).length;
 
       document.getElementById("week-rate").textContent = weekRate + "%";
@@ -982,11 +860,38 @@
       document.getElementById("total-done-count").textContent = `${allDone} / ${allTasks.length}`;
     }
 
+    // 今日の項目をAIに投げるためのテキストを生成してクリップボードへコピー
+    function copyDayForAI(day) {
+      const payload = {
+        date: day.date,
+        label: day.label,
+        scheduleInfo: day.school || "",
+        tasks: (day.tasks || []).map(t => ({
+          book: t.book,
+          range: t.range || "",
+          done: !!t.done
+        }))
+      };
+
+      const promptText = [
+        "以下の日の問題集タスクをもとに、デイタイムライン（study.html）に貼り付けるJSONを作成してください。",
+        "Tブレイク（休憩・切り替え時間）や食事、ドラム30分、23:45就寝、入浴なしを考慮してください。",
+        "出力はJSONのみにしてください。",
+        "",
+        JSON.stringify(payload, null, 2)
+      ].join("\n");
+
+      navigator.clipboard?.writeText(promptText).then(() => {
+        showToast(`${day.label} のAI連携用テキストをコピーしました`);
+      }).catch(() => {
+        openJsonModal("AI連携用テキスト（コピーしてください）", promptText, false);
+      });
+    }
+
     function toggleTaskByDate(iso, taskId) {
       const day = getDayByIso(iso);
       const task = day && day.tasks.find(t => t.id === taskId);
       if (!task) return;
-
       task.done = !task.done;
       saveData();
       render();
@@ -1002,7 +907,7 @@
       day.tasks = day.tasks.filter(t => t.id !== taskId);
       saveData();
       render();
-      showToast("タスクを削除しました");
+      showToast("削除しました");
     }
 
     function render() {
@@ -1010,15 +915,13 @@
       appData.selectedWeekId = currentWeek.id;
       updateStats(currentWeek);
 
-      // ビュー切替ボタン状態
       document.querySelectorAll(".view-btn").forEach(btn => {
         btn.classList.toggle("active", btn.dataset.view === appData.viewMode);
       });
 
-      const weekControls = document.getElementById("week-controls");
-      weekControls.style.display = appData.viewMode === "month-cal" ? "none" : "block";
+      document.getElementById("week-controls").style.display =
+        appData.viewMode === "month-cal" ? "none" : "block";
 
-      // 週タブ描画
       const tabsEl = document.getElementById("week-tabs");
       tabsEl.innerHTML = "";
       appData.weeks.forEach(w => {
@@ -1047,11 +950,12 @@
       }
     }
 
-    // 1. リスト表示
     function renderListView(container, currentWeek) {
-      currentWeek.days.forEach(day => {
-        const allDone = day.tasks.length > 0 && day.tasks.every(t => t.done);
+      (currentWeek.days || []).forEach(day => {
+        const tasks = day.tasks || [];
+        const allDone = tasks.length > 0 && tasks.every(t => t.done);
         const isToday = day.date === TODAY_ISO;
+
         const card = document.createElement("div");
         card.className = "day-card" + (allDone ? " all-done" : "") + (isToday ? " today-card" : "");
 
@@ -1061,27 +965,38 @@
           <div class="day-left">
             <span class="date-title">${day.label}</span>
             ${isToday ? '<span class="today-badge">今日</span>' : ''}
-            <span class="school-badge">${day.school}</span>
+            ${day.school ? `<span class="school-badge">${day.school}</span>` : ''}
           </div>
         `;
 
+        const actions = document.createElement("div");
+        actions.className = "day-actions";
+
+        const aiBtn = document.createElement("button");
+        aiBtn.className = "add-task-btn";
+        aiBtn.textContent = "AI用コピー";
+        aiBtn.addEventListener("click", () => copyDayForAI(day));
+
         const addBtn = document.createElement("button");
         addBtn.className = "add-task-btn primary";
-        addBtn.textContent = "＋ 問題を追加";
-        addBtn.addEventListener("click", () => openModal(day.date, null));
-        header.appendChild(addBtn);
+        addBtn.textContent = "＋ 問題集を追加";
+        addBtn.addEventListener("click", () => openTaskModal(day.date, null));
+
+        actions.appendChild(aiBtn);
+        actions.appendChild(addBtn);
+        header.appendChild(actions);
         card.appendChild(header);
 
         const list = document.createElement("div");
         list.className = "task-list";
 
-        if (day.tasks.length === 0) {
+        if (tasks.length === 0) {
           const empty = document.createElement("div");
           empty.className = "empty-msg";
-          empty.textContent = "予定なし（「＋ 問題を追加」から問題集や番号を登録できます）";
+          empty.textContent = "予定なし（「＋ 問題集を追加」から登録できます）";
           list.appendChild(empty);
         } else {
-          day.tasks.forEach(task => {
+          tasks.forEach(task => {
             const item = document.createElement("div");
             item.className = "task-item" + (task.done ? " done" : "");
 
@@ -1096,18 +1011,14 @@
               toggleTaskByDate(day.date, task.id);
             });
 
-            const subj = document.createElement("span");
-            subj.className = "subject-tag";
-            subj.textContent = task.subject || "科目";
-
             const content = document.createElement("div");
             content.className = "task-content";
 
             const book = document.createElement("span");
             book.className = "book-name";
             book.textContent = task.book || "問題集";
-
             content.appendChild(book);
+
             if (task.range) {
               const range = document.createElement("span");
               range.className = "problem-range";
@@ -1116,19 +1027,18 @@
             }
 
             main.appendChild(radio);
-            main.appendChild(subj);
             main.appendChild(content);
             main.addEventListener("click", () => toggleTaskByDate(day.date, task.id));
 
-            const actions = document.createElement("div");
-            actions.className = "task-actions";
+            const itemActions = document.createElement("div");
+            itemActions.className = "task-actions";
 
             const editBtn = document.createElement("button");
             editBtn.className = "icon-btn";
             editBtn.textContent = "編集";
             editBtn.addEventListener("click", (e) => {
               e.stopPropagation();
-              openModal(day.date, task.id);
+              openTaskModal(day.date, task.id);
             });
 
             const delBtn = document.createElement("button");
@@ -1139,11 +1049,11 @@
               deleteTaskByDate(day.date, task.id);
             });
 
-            actions.appendChild(editBtn);
-            actions.appendChild(delBtn);
+            itemActions.appendChild(editBtn);
+            itemActions.appendChild(delBtn);
 
             item.appendChild(main);
-            item.appendChild(actions);
+            item.appendChild(itemActions);
             list.appendChild(item);
           });
         }
@@ -1153,7 +1063,6 @@
       });
     }
 
-    // 2. 週間カレンダー表示（月〜日の7列）
     function renderWeekCalendarView(container, currentWeek) {
       const grid = document.createElement("div");
       grid.className = "cal-grid";
@@ -1165,39 +1074,32 @@
         grid.appendChild(head);
       });
 
-      currentWeek.days.forEach(day => {
+      (currentWeek.days || []).forEach(day => {
         const dt = parseIsoDate(day.date);
         const isToday = day.date === TODAY_ISO;
-        const allDone = day.tasks.length > 0 && day.tasks.every(t => t.done);
+        const tasks = day.tasks || [];
+        const allDone = tasks.length > 0 && tasks.every(t => t.done);
 
         const cell = document.createElement("div");
         cell.className = "cal-cell" + (isToday ? " today-cell" : "") + (allDone ? " all-done" : "");
 
         const cellHead = document.createElement("div");
         cellHead.className = "cal-cell-head";
-        cellHead.innerHTML = `
-          <span class="cal-date-num">${dt.getMonth() + 1}/${dt.getDate()}${isToday ? " (今日)" : ""}</span>
-        `;
+        cellHead.innerHTML = `<span class="cal-date-num">${dt.getMonth() + 1}/${dt.getDate()}${isToday ? " (今日)" : ""}</span>`;
 
         const addMini = document.createElement("button");
         addMini.className = "cal-add-mini";
-        addMini.textContent = "＋追加";
-        addMini.addEventListener("click", () => openModal(day.date, null));
+        addMini.textContent = "＋";
+        addMini.addEventListener("click", () => openTaskModal(day.date, null));
         cellHead.appendChild(addMini);
-
-        const school = document.createElement("div");
-        school.className = "cal-school";
-        school.textContent = day.school;
 
         const tasksBox = document.createElement("div");
         tasksBox.className = "cal-tasks";
-
-        day.tasks.forEach(task => {
+        tasks.forEach(task => {
           tasksBox.appendChild(createCalendarTaskPill(day.date, task));
         });
 
         cell.appendChild(cellHead);
-        cell.appendChild(school);
         cell.appendChild(tasksBox);
         grid.appendChild(cell);
       });
@@ -1205,7 +1107,6 @@
       container.appendChild(grid);
     }
 
-    // 3. 月間カレンダー表示
     function renderMonthCalendarView(container) {
       const wrapper = document.createElement("div");
       wrapper.className = "card";
@@ -1216,12 +1117,8 @@
       const prevBtn = document.createElement("button");
       prevBtn.textContent = "← 前月";
       prevBtn.addEventListener("click", () => {
-        if (appData.calMonth === 1) {
-          appData.calMonth = 12;
-          appData.calYear -= 1;
-        } else {
-          appData.calMonth -= 1;
-        }
+        if (appData.calMonth === 1) { appData.calMonth = 12; appData.calYear -= 1; }
+        else { appData.calMonth -= 1; }
         saveData();
         render();
       });
@@ -1233,12 +1130,8 @@
       const nextBtn = document.createElement("button");
       nextBtn.textContent = "次月 →";
       nextBtn.addEventListener("click", () => {
-        if (appData.calMonth === 12) {
-          appData.calMonth = 1;
-          appData.calYear += 1;
-        } else {
-          appData.calMonth += 1;
-        }
+        if (appData.calMonth === 12) { appData.calMonth = 1; appData.calYear += 1; }
+        else { appData.calMonth += 1; }
         saveData();
         render();
       });
@@ -1258,7 +1151,6 @@
         grid.appendChild(head);
       });
 
-      // 月曜始まりで前月分・次月分を埋める
       const firstDay = new Date(appData.calYear, appData.calMonth - 1, 1);
       const startOffset = (firstDay.getDay() + 6) % 7;
       const startDate = new Date(appData.calYear, appData.calMonth - 1, 1 - startOffset);
@@ -1270,10 +1162,9 @@
         const isCurrentMonth = (cellDate.getMonth() + 1) === appData.calMonth;
         const isToday = iso === TODAY_ISO;
         const dayObj = getDayByIso(iso);
-        const tasks = dayObj ? dayObj.tasks : [];
+        const tasks = dayObj ? (dayObj.tasks || []) : [];
         const allDone = tasks.length > 0 && tasks.every(t => t.done);
 
-        // 6週目がすべて翌月なら描画を終了
         if (i >= 35 && !isCurrentMonth && i % 7 === 0) break;
 
         const cell = document.createElement("div");
@@ -1289,8 +1180,7 @@
         const addMini = document.createElement("button");
         addMini.className = "cal-add-mini";
         addMini.textContent = "＋";
-        addMini.title = "問題を追加";
-        addMini.addEventListener("click", () => openModal(iso, null));
+        addMini.addEventListener("click", () => openTaskModal(iso, null));
         head.appendChild(addMini);
 
         const tasksBox = document.createElement("div");
@@ -1311,7 +1201,6 @@
     function createCalendarTaskPill(iso, task) {
       const pill = document.createElement("div");
       pill.className = "cal-pill" + (task.done ? " done" : "");
-      pill.title = "クリックで完了 / ダブルクリックで編集";
 
       const radio = document.createElement("input");
       radio.type = "radio";
@@ -1322,13 +1211,12 @@
       });
 
       const txt = document.createElement("span");
-      txt.className = "cal-pill-text";
-      txt.textContent = `[${task.subject}] ${task.book}${task.range ? " (" + task.range + ")" : ""}`;
+      txt.textContent = `${task.book}${task.range ? " (" + task.range + ")" : ""}`;
 
       pill.addEventListener("click", () => toggleTaskByDate(iso, task.id));
       pill.addEventListener("dblclick", (e) => {
         e.stopPropagation();
-        openModal(iso, task.id);
+        openTaskModal(iso, task.id);
       });
 
       pill.appendChild(radio);
@@ -1336,75 +1224,138 @@
       return pill;
     }
 
-    // モーダル制御
-    function openModal(dateIso, taskId) {
+    // タスクモーダル
+    function openTaskModal(dateIso, taskId) {
       modalContext = { dateIso, taskId };
       const day = getDayByIso(dateIso);
       const task = (day && taskId) ? day.tasks.find(t => t.id === taskId) : null;
 
-      document.getElementById("modal-title").textContent = task
-        ? `問題集・番号を編集（${formatDayLabel(dateIso)}）`
-        : `勉強タスクを追加（${formatDayLabel(dateIso)}）`;
-      document.getElementById("input-subject").value = task ? task.subject : "";
+      document.getElementById("modal-title").textContent = task ? "問題集を編集" : "問題集を追加";
       document.getElementById("input-book").value = task ? task.book : "";
-      document.getElementById("input-range").value = task ? task.range : "";
-
-      const delBtn = document.getElementById("modal-delete");
-      delBtn.style.display = task ? "inline-flex" : "none";
-
+      document.getElementById("input-range").value = task ? (task.range || "") : "";
+      document.getElementById("modal-delete").style.display = task ? "inline-flex" : "none";
       document.getElementById("task-modal").classList.add("open");
-      document.getElementById("input-subject").focus();
+      document.getElementById("input-book").focus();
     }
 
-    function closeModal() {
+    function closeTaskModal() {
       document.getElementById("task-modal").classList.remove("open");
       modalContext = null;
     }
 
-    document.getElementById("modal-cancel").addEventListener("click", closeModal);
+    document.getElementById("modal-cancel").addEventListener("click", closeTaskModal);
     document.getElementById("task-modal").addEventListener("click", (e) => {
-      if (e.target.id === "task-modal") closeModal();
+      if (e.target.id === "task-modal") closeTaskModal();
+    });
+
+    document.getElementById("modal-save").addEventListener("click", () => {
+      if (!modalContext) return;
+      const book = document.getElementById("input-book").value.trim() || "問題集";
+      const range = document.getElementById("input-range").value.trim();
+      const day = findOrCreateDayByIso(modalContext.dateIso);
+
+      if (modalContext.taskId) {
+        const task = day.tasks.find(t => t.id === modalContext.taskId);
+        if (task) { task.book = book; task.range = range; }
+        showToast("更新しました");
+      } else {
+        day.tasks.push({ id: "t-" + Date.now(), book, range, done: false });
+        showToast("追加しました");
+      }
+
+      saveData();
+      closeTaskModal();
+      render();
     });
 
     document.getElementById("modal-delete").addEventListener("click", () => {
       if (!modalContext || !modalContext.taskId) return;
       deleteTaskByDate(modalContext.dateIso, modalContext.taskId);
-      closeModal();
+      closeTaskModal();
     });
 
-    document.getElementById("modal-save").addEventListener("click", () => {
-      if (!modalContext) return;
-      const subject = document.getElementById("input-subject").value.trim() || "勉強";
-      const book = document.getElementById("input-book").value.trim() || "問題集";
-      const range = document.getElementById("input-range").value.trim();
+    // 日追加モーダル
+    document.getElementById("add-day-btn").addEventListener("click", () => {
+      const week = getCurrentWeek();
+      const lastDay = week.days[week.days.length - 1];
+      const nextIso = lastDay && lastDay.date ? addDays(lastDay.date, 1) : TODAY_ISO;
+      document.getElementById("d-date").value = nextIso;
+      document.getElementById("d-label").value = formatDayLabel(nextIso);
+      document.getElementById("d-school").value = SCHOOL_BY_DOW[parseIsoDate(nextIso).getDay()];
+      document.getElementById("day-modal").classList.add("open");
+    });
 
-      const day = findOrCreateDayByIso(modalContext.dateIso);
+    document.getElementById("d-cancel").addEventListener("click", () => {
+      document.getElementById("day-modal").classList.remove("open");
+    });
 
-      if (modalContext.taskId) {
-        const task = day.tasks.find(t => t.id === modalContext.taskId);
-        if (task) {
-          task.subject = subject;
-          task.book = book;
-          task.range = range;
-        }
-        showToast("更新しました");
-      } else {
-        day.tasks.push({
-          id: "t-" + Date.now(),
-          subject,
-          book,
-          range,
-          done: false
-        });
-        showToast("追加しました");
-      }
-
+    document.getElementById("d-save").addEventListener("click", () => {
+      const iso = document.getElementById("d-date").value.trim() || TODAY_ISO;
+      const label = document.getElementById("d-label").value.trim() || formatDayLabel(iso);
+      const school = document.getElementById("d-school").value.trim();
+      const week = getCurrentWeek();
+      week.days.push({
+        id: "day-" + iso + "-" + Date.now(),
+        date: iso,
+        label,
+        school,
+        tasks: []
+      });
       saveData();
-      closeModal();
+      document.getElementById("day-modal").classList.remove("open");
       render();
+      showToast("日を追加しました");
     });
 
-    // イベント登録
+    // JSON貼り付け・出力モーダル
+    let jsonModalCanApply = true;
+    function openJsonModal(title, text, canApply = true) {
+      jsonModalCanApply = canApply;
+      document.getElementById("json-modal-title").textContent = title;
+      document.getElementById("json-modal-label").textContent = canApply
+        ? "AIに作らせたJSONを貼り付けて「反映する」を押してください"
+        : "以下の内容をコピーしてAIに貼り付けてください";
+      document.getElementById("json-textarea").value = text;
+      document.getElementById("json-apply").style.display = canApply ? "inline-flex" : "none";
+      document.getElementById("json-modal").classList.add("open");
+    }
+
+    document.getElementById("open-paste-json-btn").addEventListener("click", () => {
+      openJsonModal("JSONを貼り付けて反映", "", true);
+    });
+
+    document.getElementById("open-copy-json-btn").addEventListener("click", () => {
+      openJsonModal("現在の週間計画JSON", JSON.stringify(appData, null, 2), false);
+    });
+
+    document.getElementById("json-copy-btn").addEventListener("click", () => {
+      const val = document.getElementById("json-textarea").value;
+      navigator.clipboard?.writeText(val).then(() => showToast("コピーしました"));
+    });
+
+    document.getElementById("json-cancel").addEventListener("click", () => {
+      document.getElementById("json-modal").classList.remove("open");
+    });
+
+    document.getElementById("json-apply").addEventListener("click", () => {
+      if (!jsonModalCanApply) return;
+      try {
+        const raw = document.getElementById("json-textarea").value.trim();
+        const parsed = JSON.parse(raw);
+        if (parsed && Array.isArray(parsed.weeks) && parsed.weeks.length > 0) {
+          appData = { viewMode: "list", calYear: 2026, calMonth: 11, ...parsed };
+          saveData();
+          document.getElementById("json-modal").classList.remove("open");
+          render();
+          showToast("JSONを反映しました");
+        } else {
+          showToast("weeks配列を含むJSONを貼ってください");
+        }
+      } catch {
+        showToast("JSONの形式が正しくありません");
+      }
+    });
+
     document.querySelectorAll(".view-btn").forEach(btn => {
       btn.addEventListener("click", () => {
         appData.viewMode = btn.dataset.view;
@@ -1418,13 +1369,12 @@
       week.title = e.target.value.trim() || week.title;
       saveData();
       render();
-      showToast("週のタイトルを変更しました");
     });
 
     document.getElementById("add-week-btn").addEventListener("click", () => {
-      const newWeek = createNextWeek(appData.weeks);
-      appData.weeks.push(newWeek);
-      appData.selectedWeekId = newWeek.id;
+      const nw = createNextWeek(appData.weeks);
+      appData.weeks.push(nw);
+      appData.selectedWeekId = nw.id;
       saveData();
       render();
       showToast("次の週を追加しました");
@@ -1440,7 +1390,6 @@
         appData.selectedWeekId = appData.weeks[0].id;
         saveData();
         render();
-        showToast("週を削除しました");
       }
     });
 
@@ -1449,35 +1398,14 @@
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = "study-plan-progress.json";
+      a.download = "study-weekly-plan.json";
       a.click();
       URL.revokeObjectURL(url);
-      showToast("JSONファイルを保存しました");
-    });
-
-    document.getElementById("import-file").addEventListener("change", (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = () => {
-        try {
-          const parsed = JSON.parse(reader.result);
-          if (parsed && Array.isArray(parsed.weeks) && parsed.weeks.length > 0) {
-            appData = { viewMode: "list", calYear: 2026, calMonth: 11, ...parsed };
-            saveData();
-            render();
-            showToast("計画ファイルを読み込みました");
-          }
-        } catch {
-          showToast("JSONの読み込みに失敗しました");
-        }
-      };
-      reader.readAsText(file);
-      e.target.value = "";
+      showToast("JSONをダウンロードしました");
     });
 
     document.getElementById("reset-btn").addEventListener("click", () => {
-      if (confirm("編集内容と進捗を今週スタートの初期状態に戻しますか？")) {
+      if (confirm("初期状態に戻しますか？")) {
         appData = createInitialData();
         saveData();
         render();
