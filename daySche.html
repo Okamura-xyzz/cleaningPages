@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Day Timeline｜学習＆生活スケジュール</title>
+  <style>
+    :root {
+      --bg: #f2f2f7;
+      --surface: #ffffff;
+      --text: #1c1c1e;
+      --muted: #6e6e73;
+      --line: #e5e5ea;
+      --ios-red: #ff3b30;
+      --ios-blue: #007aff;
+      --ios-green: #34c759;
+      --ios-orange: #ff9500;
+      --ios-purple: #af52de;
+      --ios-teal: #30b0c7;
+      --done-bg: #e9f9ee;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Hiragino Sans", "Noto Sans JP", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.4;
+    }
+
+    .top-bar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--line);
+      padding: 10px 14px 8px;
+    }
+
+    .top-row {
+      max-width: 820px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .week-heading {
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+
+    .actions {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    button, .file-label {
+      border: 1px solid var(--line);
+      background: var(--surface);
+      color: var(--text);
+      border-radius: 8px;
+      padding: 5px 10px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    button.primary {
+      background: var(--ios-red);
+      color: #fff;
+      border-color: var(--ios-red);
+    }
+
+    .week-strip {
+      max-width: 820px;
+      margin: 10px auto 0;
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
+      text-align: center;
+    }
+
+    .day-pill {
+      padding: 6px 4px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+
+    .day-pill:hover {
+      background: rgba(0, 0, 0, 0.04);
+    }
+
+    .day-pill .dow {
+      font-size: 0.7rem;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .day-pill .num {
+      margin: 2px auto 0;
+      width: 30px;
+      height: 30px;
+      line-height: 30px;
+      border-radius: 50%;
+      font-weight: 700;
+      font-size: 0.92rem;
+    }
+
+    .day-pill.active .num {
+      background: var(--ios-red);
+      color: #fff;
+    }
+
+    .day-pill.today:not(.active) .num {
+      color: var(--ios-red);
+      box-shadow: inset 0 0 0 1.5px var(--ios-red);
+    }
+
+    .day-pill .dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--ios-blue);
+      margin: 3px auto 0;
+      opacity: 0;
+    }
+
+    .day-pill.has-items .dot {
+      opacity: 1;
+    }
+
+    .day-banner {
+      max-width: 820px;
+      margin: 12px auto 8px;
+      padding: 0 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .day-banner-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+    }
+
+    .day-banner-sub {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .timeline-wrap {
+      max-width: 820px;
+      margin: 0 auto 36px;
+      padding: 0 14px;
+    }
+
+    .timeline {
+      position: relative;
+      background: var(--surface);
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      overflow: hidden;
+      padding: 8px 0;
+    }
+
+    .hour-row {
+      display: grid;
+      grid-template-columns: 56px 1fr;
+      min-height: 58px;
+      position: relative;
+    }
+
+    .hour-label {
+      font-size: 0.72rem;
+      color: var(--muted);
+      text-align: right;
+      padding-right: 10px;
+      transform: translateY(-7px);
+      user-select: none;
+    }
+
+    .hour-slot {
+      border-top: 1px solid var(--line);
+      padding: 4px 10px 6px 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+    }
+
+    .hour-slot:hover {
+      background: #fafafa;
+    }
+
+    .hour-row:first-child .hour-slot {
+      border-top: none;
+    }
+
+    .now-line {
+      position: absolute;
+      left: 52px;
+      right: 0;
+      height: 2px;
+      background: var(--ios-red);
+      z-index: 10;
+      pointer-events: none;
+    }
+
+    .now-line::before {
+      content: "";
+      position: absolute;
+      left: -4px;
+      top: -3px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--ios-red);
+    }
+
+    .event-block {
+      border-left: 4px solid var(--ios-blue);
+      background: #eef6ff;
+      color: #0b2e59;
+      border-radius: 8px;
+      padding: 6px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      cursor: pointer;
+      transition: transform 0.1s ease, opacity 0.15s ease;
+    }
+
+    .event-block:hover {
+      transform: translateX(1px);
+    }
+
+    .event-block.cat-physics { border-left-color: var(--ios-blue); background: #eaf3ff; color: #0c2d57; }
+    .event-block.cat-english { border-left-color: var(--ios-purple); background: #f5ecff; color: #3d1259; }
+    .event-block.cat-math    { border-left-color: var(--ios-teal); background: #e6f7fa; color: #093b46; }
+    .event-block.cat-drum    { border-left-color: var(--ios-orange); background: #fff3e3; color: #5c2d00; }
+    .event-block.cat-life    { border-left-color: #8e8e93; background: #f2f2f7; color: #2c2c2e; }
+
+    .event-block.done {
+      background: var(--done-bg);
+      border-left-color: var(--ios-green);
+      color: #14532d;
+      opacity: 0.85;
+    }
+
+    .event-block.done .event-title {
+      text-decoration: line-through;
+    }
+
+    .event-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+      flex: 1;
+    }
+
+    .event-radio {
+      width: 17px;
+      height: 17px;
+      accent-color: var(--ios-green);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .event-meta {
+      min-width: 0;
+    }
+
+    .event-time {
+      font-size: 0.7rem;
+      font-weight: 700;
+      opacity: 0.8;
+    }
+
+    .event-title {
+      font-size: 0.86rem;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .event-edit-btn {
+      background: rgba(255, 255, 255, 0.75);
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      padding: 2px 7px;
+      font-size: 0.7rem;
+      border-radius: 6px;
+      flex-shrink: 0;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.4);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 100;
+    }
+
+    .modal-backdrop.open { display: flex; }
+
+    .modal {
+      background: #fff;
+      border-radius: 14px;
+      width: 100%;
+      max-width: 400px;
+      padding: 18px;
+    }
+
+    .modal h2 {
+      margin: 0 0 12px;
+      font-size: 1.05rem;
+    }
+
+    .field {
+      margin-bottom: 10px;
+    }
+
+    .field label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: 3px;
+    }
+
+    .field input, .field select {
+      width: 100%;
+      padding: 7px 9px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      font-size: 0.9rem;
+    }
+
+    .modal-foot {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 14px;
+    }
+
+    .modal-foot-r {
+      display: flex;
+      gap: 6px;
+    }
+
+    #confetti-layer {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 200;
+    }
+
+    .confetti {
+      position: absolute;
+      top: -12px;
+      width: 9px;
+      height: 13px;
+      border-radius: 2px;
+      animation: fall 1s ease-out forwards;
+    }
+
+    @keyframes fall {
+      0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(85vh) rotate(520deg); opacity: 0; }
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 18px;
+      right: 18px;
+      background: #1c1c1e;
+      color: #fff;
+      padding: 8px 14px;
+      border-radius: 10px;
+      font-size: 0.82rem;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      z-index: 300;
+    }
+
+    .toast.show { opacity: 1; }
+  </style>
+</head>
+<body>
+  <div id="confetti-layer"></div>
+  <div id="toast" class="toast"></div>
+
+  <header class="top-bar">
+    <div class="top-row">
+      <span class="week-heading" id="week-heading">Day表示</span>
+      <div class="actions">
+        <button class="primary" id="add-event-btn">＋ 予定追加</button>
+        <button id="reload-json-btn">schedule.json読込</button>
+        <button id="export-btn">JSON保存</button>
+        <label class="file-label">
+          JSON選択
+          <input type="file" id="import-file" accept=".json,application/json" hidden />
+        </label>
+      </div>
+    </div>
+    <div class="week-strip" id="week-strip"></div>
+  </header>
+
+  <div class="day-banner">
+    <div>
+      <div class="day-banner-title" id="banner-title"></div>
+      <div class="day-banner-sub" id="banner-sub"></div>
+    </div>
+    <div class="day-banner-sub" id="day-progress">完了: 0 / 0</div>
+  </div>
+
+  <main class="timeline-wrap">
+    <div class="timeline" id="timeline"></div>
+  </main>
+
+  <div class="modal-backdrop" id="modal">
+    <div class="modal">
+      <h2 id="modal-title">予定を編集</h2>
+      <div class="field">
+        <label for="m-start">開始時刻</label>
+        <input type="text" id="m-start" placeholder="15:00" />
+      </div>
+      <div class="field">
+        <label for="m-end">終了時刻</label>
+        <input type="text" id="m-end" placeholder="16:00" />
+      </div>
+      <div class="field">
+        <label for="m-title">内容・問題番号</label>
+        <input type="text" id="m-title" placeholder="大学生の初等力学 #51" />
+      </div>
+      <div class="field">
+        <label for="m-cat">カラー区分</label>
+        <select id="m-cat">
+          <option value="physics">物理（青）</option>
+          <option value="english">英語・単語（紫）</option>
+          <option value="math">線形代数・数学（水色）</option>
+          <option value="drum">ドラム練習（橙）</option>
+          <option value="life">食事・就寝・生活（灰）</option>
+        </select>
+      </div>
+      <div class="modal-foot">
+        <button id="m-delete" style="color:#ff3b30; display:none;">削除</button>
+        <div class="modal-foot-r">
+          <button id="m-cancel">キャンセル</button>
+          <button class="primary" id="m-save">保存</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = "day_timeline_separated_v1";
+    const JSON_URL = "./schedule.json";
+    const TODAY_ISO = "2026-11-24";
+    const START_HOUR = 10;
+    const END_HOUR = 24;
+
+    let state = {
+      selectedDate: TODAY_ISO,
+      weeks: [
+        {
+          id: "week-1",
+          title: "第1週（11/23〜11/29）",
+          days: [
+            { date: "2026-11-23", label: "月曜日（11/23）", school: "10:30終了", events: [] },
+            { date: "2026-11-24", label: "火曜日（11/24）", school: "12:10終了｜23:45就寝", events: [] },
+            { date: "2026-11-25", label: "水曜日（11/25）", school: "16:10終了", events: [] },
+            { date: "2026-11-26", label: "木曜日（11/26）", school: "15:30終了", events: [] },
+            { date: "2026-11-27", label: "金曜日（11/27）", school: "16:30終了", events: [] },
+            { date: "2026-11-28", label: "土曜日（11/28）", school: "休日", events: [] },
+            { date: "2026-11-29", label: "日曜日（11/29）", school: "休日", events: [] }
+          ]
+        }
+      ]
+    };
+
+    let editTarget = null;
+
+    function saveLocal() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function loadLocal() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (parsed && Array.isArray(parsed.weeks)) {
+            state = parsed;
+            return true;
+          }
+        }
+      } catch {}
+      return false;
+    }
+
+    async function fetchExternalJson(showNotice = false) {
+      try {
+        const res = await fetch(JSON_URL + "?t=" + Date.now());
+        if (!res.ok) throw new Error("fetch failed");
+        const data = await res.json();
+        if (data && Array.isArray(data.weeks)) {
+          state = { ...state, ...data };
+          saveLocal();
+          render();
+          if (showNotice) showToast("schedule.json を読み込みました");
+          return true;
+        }
+      } catch {
+        if (showNotice) showToast("schedule.json の取得に失敗しました（JSON選択をお試しください）");
+      }
+      return false;
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById("toast");
+      t.textContent = msg;
+      t.classList.add("show");
+      clearTimeout(showToast._t);
+      showToast._t = setTimeout(() => t.classList.remove("show"), 1800);
+    }
+
+    function confettiEffect() {
+      const layer = document.getElementById("confetti-layer");
+      const colors = ["#007aff", "#34c759", "#ff9500", "#af52de", "#ff3b30"];
+      for (let i = 0; i < 20; i++) {
+        const el = document.createElement("div");
+        el.className = "confetti";
+        el.style.left = Math.random() * 100 + "vw";
+        el.style.background = colors[i % colors.length];
+        el.style.animationDelay = (Math.random() * 0.2) + "s";
+        layer.appendChild(el);
+        setTimeout(() => el.remove(), 1200);
+      }
+    }
+
+    function getCurrentDay() {
+      const w = state.weeks[0];
+      return w.days.find(d => d.date === state.selectedDate) || w.days[1] || w.days[0];
+    }
+
+    function parseHour(timeStr) {
+      const [h, m] = (timeStr || "12:00").split(":").map(Number);
+      if (isNaN(h)) return 12;
+      return h + (isNaN(m) ? 0 : m / 60);
+    }
+
+    function toggleEvent(eventId) {
+      const day = getCurrentDay();
+      const ev = day.events.find(e => e.id === eventId);
+      if (!ev) return;
+      ev.done = !ev.done;
+      saveLocal();
+      render();
+      if (ev.done) {
+        confettiEffect();
+        showToast("完了！");
+      }
+    }
+
+    function render() {
+      const week = state.weeks[0];
+      const day = getCurrentDay();
+      document.getElementById("week-heading").textContent = `${week.title} Day表示`;
+
+      const strip = document.getElementById("week-strip");
+      strip.innerHTML = "";
+      const dows = ["月", "火", "水", "木", "金", "土", "日"];
+      week.days.forEach((d, idx) => {
+        const num = Number(d.date.split("-")[2]);
+        const pill = document.createElement("div");
+        pill.className = "day-pill"
+          + (d.date === day.date ? " active" : "")
+          + (d.date === TODAY_ISO ? " today" : "")
+          + ((d.events && d.events.length > 0) ? " has-items" : "");
+        pill.innerHTML = `<div class="dow">${dows[idx]}</div><div class="num">${num}</div><div class="dot"></div>`;
+        pill.addEventListener("click", () => {
+          state.selectedDate = d.date;
+          saveLocal();
+          render();
+        });
+        strip.appendChild(pill);
+      });
+
+      document.getElementById("banner-title").textContent = day.label;
+      document.getElementById("banner-sub").textContent = day.school || "";
+      const events = day.events || [];
+      const doneCount = events.filter(e => e.done).length;
+      document.getElementById("day-progress").textContent = `完了: ${doneCount} / ${events.length}`;
+
+      const tl = document.getElementById("timeline");
+      tl.innerHTML = "";
+
+      const sorted = [...events].sort((a, b) => (a.start || "").localeCompare(b.start || ""));
+      const byHour = {};
+      for (let h = START_HOUR; h < END_HOUR; h++) byHour[h] = [];
+
+      sorted.forEach(ev => {
+        const hr = Math.floor(parseHour(ev.start));
+        const clamped = Math.max(START_HOUR, Math.min(END_HOUR - 1, hr));
+        byHour[clamped].push(ev);
+      });
+
+      for (let h = START_HOUR; h < END_HOUR; h++) {
+        const row = document.createElement("div");
+        row.className = "hour-row";
+
+        const label = document.createElement("div");
+        label.className = "hour-label";
+        label.textContent = `${String(h).padStart(2, "0")}:00`;
+
+        const slot = document.createElement("div");
+        slot.className = "hour-slot";
+        slot.addEventListener("click", () => openModal(null, `${String(h).padStart(2, "0")}:00`));
+
+        byHour[h].forEach(ev => {
+          const block = document.createElement("div");
+          block.className = `event-block cat-${ev.cat || "physics"}` + (ev.done ? " done" : "");
+
+          const left = document.createElement("div");
+          left.className = "event-left";
+
+          const radio = document.createElement("input");
+          radio.type = "radio";
+          radio.className = "event-radio";
+          radio.checked = !!ev.done;
+          radio.addEventListener("click", (e) => {
+            e.stopPropagation();
+            toggleEvent(ev.id);
+          });
+
+          const meta = document.createElement("div");
+          meta.className = "event-meta";
+          meta.innerHTML = `
+            <div class="event-time">${ev.start || ""} - ${ev.end || ""}</div>
+            <div class="event-title">${ev.title}</div>
+          `;
+
+          left.appendChild(radio);
+          left.appendChild(meta);
+          block.addEventListener("click", (e) => {
+            e.stopPropagation();
+            toggleEvent(ev.id);
+          });
+
+          const editBtn = document.createElement("button");
+          editBtn.className = "event-edit-btn";
+          editBtn.textContent = "編集";
+          editBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            openModal(ev.id);
+          });
+
+          block.appendChild(left);
+          block.appendChild(editBtn);
+          slot.appendChild(block);
+        });
+
+        row.appendChild(label);
+        row.appendChild(slot);
+        tl.appendChild(row);
+      }
+
+      if (day.date === TODAY_ISO) {
+        const nowLine = document.createElement("div");
+        nowLine.className = "now-line";
+        const offsetRows = (14 + 55 / 60) - START_HOUR;
+        nowLine.style.top = (8 + offsetRows * 58) + "px";
+        tl.appendChild(nowLine);
+      }
+    }
+
+    function openModal(eventId, presetStart = "15:00") {
+      editTarget = { eventId };
+      const day = getCurrentDay();
+      const ev = eventId ? day.events.find(e => e.id === eventId) : null;
+
+      document.getElementById("modal-title").textContent = ev ? "予定を編集" : "予定を追加";
+      document.getElementById("m-start").value = ev ? ev.start : presetStart;
+      document.getElementById("m-end").value = ev ? ev.end : "";
+      document.getElementById("m-title").value = ev ? ev.title : "";
+      document.getElementById("m-cat").value = ev ? (ev.cat || "physics") : "physics";
+      document.getElementById("m-delete").style.display = ev ? "inline-block" : "none";
+      document.getElementById("modal").classList.add("open");
+    }
+
+    function closeModal() {
+      document.getElementById("modal").classList.remove("open");
+      editTarget = null;
+    }
+
+    document.getElementById("add-event-btn").addEventListener("click", () => openModal(null, "15:00"));
+    document.getElementById("reload-json-btn").addEventListener("click", () => fetchExternalJson(true));
+    document.getElementById("m-cancel").addEventListener("click", closeModal);
+    document.getElementById("modal").addEventListener("click", (e) => {
+      if (e.target.id === "modal") closeModal();
+    });
+
+    document.getElementById("m-save").addEventListener("click", () => {
+      if (!editTarget) return;
+      const start = document.getElementById("m-start").value.trim();
+      const end = document.getElementById("m-end").value.trim();
+      const title = document.getElementById("m-title").value.trim() || "予定";
+      const cat = document.getElementById("m-cat").value;
+
+      const day = getCurrentDay();
+      if (editTarget.eventId) {
+        const ev = day.events.find(e => e.id === editTarget.eventId);
+        if (ev) Object.assign(ev, { start, end, title, cat });
+        showToast("更新しました");
+      } else {
+        day.events.push({ id: "ev-" + Date.now(), start, end, title, cat, done: false });
+        showToast("追加しました");
+      }
+      saveLocal();
+      closeModal();
+      render();
+    });
+
+    document.getElementById("m-delete").addEventListener("click", () => {
+      if (!editTarget || !editTarget.eventId) return;
+      const day = getCurrentDay();
+      day.events = day.events.filter(e => e.id !== editTarget.eventId);
+      saveLocal();
+      closeModal();
+      render();
+      showToast("削除しました");
+    });
+
+    document.getElementById("export-btn").addEventListener("click", () => {
+      const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "schedule.json";
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast("schedule.json を保存しました");
+    });
+
+    document.getElementById("import-file").addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const parsed = JSON.parse(reader.result);
+          if (parsed && Array.isArray(parsed.weeks)) {
+            state = parsed;
+            saveLocal();
+            render();
+            showToast("JSONを読み込みました");
+          }
+        } catch {
+          showToast("読み込みに失敗しました");
+        }
+      };
+      reader.readAsText(file);
+      e.target.value = "";
+    });
+
+    (async () => {
+      const hasLocal = loadLocal();
+      render();
+      if (!hasLocal) {
+        await fetchExternalJson(false);
+      }
+    })();
+  </script>
+</body>
+</html>
