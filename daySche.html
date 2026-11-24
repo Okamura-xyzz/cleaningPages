@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Day Timeline｜時間比例スケジュール</title>
+  <title>Day Timeline｜Tブレイク計算＆時間割連動</title>
   <style>
     :root {
       --bg: #f2f2f7;
@@ -18,7 +18,7 @@
       --ios-purple: #af52de;
       --ios-teal: #30b0c7;
       --done-bg: #e9f9ee;
-      --hour-h: 64px; /* 1時間 = 64px（1分 = 64/60 px） */
+      --hour-h: 64px;
       --label-w: 56px;
     }
 
@@ -43,7 +43,7 @@
     }
 
     .top-row {
-      max-width: 820px;
+      max-width: 860px;
       margin: 0 auto;
       display: flex;
       justify-content: space-between;
@@ -52,18 +52,24 @@
       flex-wrap: wrap;
     }
 
-    .week-heading {
-      font-weight: 700;
-      font-size: 0.95rem;
-    }
-
-    .actions {
-      display: flex;
+    .nav-mini {
+      display: inline-flex;
       gap: 6px;
-      flex-wrap: wrap;
+      align-items: center;
     }
 
-    button, .file-label {
+    .nav-mini a {
+      color: var(--ios-blue);
+      text-decoration: none;
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+
+    .week-heading { font-weight: 700; font-size: 0.92rem; }
+
+    .actions { display: flex; gap: 6px; flex-wrap: wrap; }
+
+    button {
       border: 1px solid var(--line);
       background: var(--surface);
       color: var(--text);
@@ -81,7 +87,7 @@
     }
 
     .week-strip {
-      max-width: 820px;
+      max-width: 860px;
       margin: 10px auto 0;
       display: grid;
       grid-template-columns: repeat(7, 1fr);
@@ -95,9 +101,7 @@
       cursor: pointer;
     }
 
-    .day-pill:hover {
-      background: rgba(0, 0, 0, 0.04);
-    }
+    .day-pill:hover { background: rgba(0, 0, 0, 0.04); }
 
     .day-pill .dow {
       font-size: 0.7rem;
@@ -134,12 +138,10 @@
       opacity: 0;
     }
 
-    .day-pill.has-items .dot {
-      opacity: 1;
-    }
+    .day-pill.has-items .dot { opacity: 1; }
 
     .day-banner {
-      max-width: 820px;
+      max-width: 860px;
       margin: 12px auto 8px;
       padding: 0 14px;
       display: flex;
@@ -149,23 +151,49 @@
       gap: 8px;
     }
 
-    .day-banner-title {
-      font-size: 1.15rem;
-      font-weight: 700;
+    .day-banner-title { font-size: 1.12rem; font-weight: 700; }
+    .day-banner-sub { font-size: 0.78rem; color: var(--muted); }
+
+    /* 自分で触れるTブレイク＆開始時間コントロール帯 */
+    .tbreak-bar {
+      max-width: 860px;
+      margin: 0 auto 10px;
+      padding: 0 14px;
     }
 
-    .day-banner-sub {
-      font-size: 0.8rem;
-      color: var(--muted);
+    .tbreak-panel {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 10px 12px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.78rem;
+    }
+
+    .tbreak-panel label {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-weight: 600;
+    }
+
+    .tbreak-panel input {
+      width: 68px;
+      padding: 4px 6px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      font-size: 0.78rem;
     }
 
     .timeline-wrap {
-      max-width: 820px;
+      max-width: 860px;
       margin: 0 auto 36px;
       padding: 0 14px;
     }
 
-    /* スクロール可能なタイムライン領域 */
     .timeline-scroll {
       max-height: 68vh;
       overflow-y: auto;
@@ -207,11 +235,8 @@
       cursor: pointer;
     }
 
-    .hour-grid-line:hover {
-      background: #fafafa;
-    }
+    .hour-grid-line:hover { background: #fafafa; }
 
-    /* 現在時刻ライン */
     .now-line {
       position: absolute;
       left: calc(var(--label-w) - 4px);
@@ -233,7 +258,6 @@
       background: var(--ios-red);
     }
 
-    /* 時間長に応じた高さのイベントブロック */
     .event-block {
       position: absolute;
       left: calc(var(--label-w) + 6px);
@@ -251,13 +275,13 @@
       overflow: hidden;
       z-index: 10;
       box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-      transition: opacity 0.15s ease;
     }
 
     .event-block.cat-physics { border-left-color: var(--ios-blue); background: #eaf3ff; color: #0c2d57; }
     .event-block.cat-english { border-left-color: var(--ios-purple); background: #f5ecff; color: #3d1259; }
     .event-block.cat-math    { border-left-color: var(--ios-teal); background: #e6f7fa; color: #093b46; }
     .event-block.cat-drum    { border-left-color: var(--ios-orange); background: #fff3e3; color: #5c2d00; }
+    .event-block.cat-tbreak  { border-left-color: #ffcc00; background: #fffbe6; color: #664d00; }
     .event-block.cat-life    { border-left-color: #8e8e93; background: #f2f2f7; color: #2c2c2e; }
 
     .event-block.done {
@@ -267,9 +291,7 @@
       opacity: 0.85;
     }
 
-    .event-block.done .event-title {
-      text-decoration: line-through;
-    }
+    .event-block.done .event-title { text-decoration: line-through; }
 
     .event-left {
       display: flex;
@@ -311,17 +333,11 @@
       text-overflow: ellipsis;
     }
 
-    /* 15〜20分など短いブロック用のコンパクト表示 */
-    .event-block.compact {
-      padding: 1px 7px;
-    }
-
-    .event-block.compact .event-title {
-      font-size: 0.74rem;
-    }
+    .event-block.compact { padding: 1px 7px; }
+    .event-block.compact .event-title { font-size: 0.74rem; }
 
     .event-edit-btn {
-      background: rgba(255, 255, 255, 0.8);
+      background: rgba(255, 255, 255, 0.85);
       border: 1px solid rgba(0, 0, 0, 0.12);
       padding: 1px 6px;
       font-size: 0.68rem;
@@ -347,18 +363,12 @@
       background: #fff;
       border-radius: 14px;
       width: 100%;
-      max-width: 400px;
+      max-width: 480px;
       padding: 18px;
     }
 
-    .modal h2 {
-      margin: 0 0 12px;
-      font-size: 1.05rem;
-    }
-
-    .field {
-      margin-bottom: 10px;
-    }
+    .modal h2 { margin: 0 0 12px; font-size: 1.05rem; }
+    .field { margin-bottom: 10px; }
 
     .field label {
       display: block;
@@ -368,12 +378,19 @@
       margin-bottom: 3px;
     }
 
-    .field input, .field select {
+    .field input, .field select, .field textarea {
       width: 100%;
       padding: 7px 9px;
       border: 1px solid var(--line);
       border-radius: 8px;
       font-size: 0.9rem;
+      font-family: inherit;
+    }
+
+    .field textarea {
+      min-height: 180px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.8rem;
     }
 
     .modal-foot {
@@ -382,10 +399,7 @@
       margin-top: 14px;
     }
 
-    .modal-foot-r {
-      display: flex;
-      gap: 6px;
-    }
+    .modal-foot-r { display: flex; gap: 6px; }
 
     #confetti-layer {
       position: fixed;
@@ -432,16 +446,15 @@
 
   <header class="top-bar">
     <div class="top-row">
-      <span class="week-heading" id="week-heading">Day表示</span>
+      <div class="nav-mini">
+        <a href="index2.html">← 週間計画へ</a>
+        <span class="week-heading" id="week-heading">Day表示</span>
+      </div>
       <div class="actions">
-        <button id="scroll-1505-btn">15:05へ移動</button>
         <button class="primary" id="add-event-btn">＋ 予定追加</button>
-        <button id="reload-json-btn">sche.json読込</button>
+        <button id="open-paste-btn">JSONを貼り付け</button>
+        <button id="copy-json-btn">JSONコピー</button>
         <button id="export-btn">JSON保存</button>
-        <label class="file-label">
-          JSON選択
-          <input type="file" id="import-file" accept=".json,application/json" hidden />
-        </label>
       </div>
     </div>
     <div class="week-strip" id="week-strip"></div>
@@ -455,26 +468,38 @@
     <div class="day-banner-sub" id="day-progress">完了: 0 / 0</div>
   </div>
 
+  <!-- 自分で触れるTブレイク＆開始時間調整パネル -->
+  <div class="tbreak-bar">
+    <div class="tbreak-panel">
+      <label>開始: <input type="text" id="cfg-start" value="15:20" /></label>
+      <label>Tブレイク(分): <input type="number" id="cfg-tbreak" value="10" min="0" max="60" /></label>
+      <label>就寝: <input type="text" id="cfg-bedtime" value="23:45" /></label>
+      <button class="primary" id="apply-tbreak-btn">Tブレイク反映＆再計算</button>
+      <button id="apply-timetable-btn">今日の時間割メモを反映</button>
+    </div>
+  </div>
+
   <main class="timeline-wrap">
     <div class="timeline-scroll" id="timeline-scroll">
       <div class="timeline-canvas" id="timeline-canvas"></div>
     </div>
   </main>
 
+  <!-- 予定追加・編集モーダル -->
   <div class="modal-backdrop" id="modal">
     <div class="modal">
       <h2 id="modal-title">予定を編集</h2>
       <div class="field">
         <label for="m-start">開始時刻</label>
-        <input type="text" id="m-start" placeholder="15:05" />
+        <input type="text" id="m-start" placeholder="15:20" />
       </div>
       <div class="field">
         <label for="m-end">終了時刻</label>
-        <input type="text" id="m-end" placeholder="15:25" />
+        <input type="text" id="m-end" placeholder="16:20" />
       </div>
       <div class="field">
-        <label for="m-title">内容・問題番号</label>
-        <input type="text" id="m-title" placeholder="T-words 7-2,3（20分）" />
+        <label for="m-title">内容</label>
+        <input type="text" id="m-title" placeholder="大学生の初等力学 #51（60分）" />
       </div>
       <div class="field">
         <label for="m-cat">カラー区分</label>
@@ -483,6 +508,7 @@
           <option value="english">英語・単語（紫）</option>
           <option value="math">線形代数・数学（水色）</option>
           <option value="drum">ドラム練習（橙）</option>
+          <option value="tbreak">Tブレイク（黄）</option>
           <option value="life">食事・就寝・生活（灰）</option>
         </select>
       </div>
@@ -496,39 +522,95 @@
     </div>
   </div>
 
+  <!-- JSON貼り付けモーダル -->
+  <div class="modal-backdrop" id="paste-modal">
+    <div class="modal">
+      <h2>JSONを貼り付けて読み込み</h2>
+      <div class="field">
+        <label for="paste-textarea">AIに作らせたJSON（1日分またはweeks形式）を貼り付けてください</label>
+        <textarea id="paste-textarea" placeholder='{"date":"2026-11-24","events":[...]}'></textarea>
+      </div>
+      <div class="modal-foot">
+        <div></div>
+        <div class="modal-foot-r">
+          <button id="paste-cancel">キャンセル</button>
+          <button class="primary" id="paste-apply">読み込む</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script>
-    const STORAGE_KEY = "day_timeline_proportional_v1";
-    const JSON_URL = "./sche.json";
+    const STORAGE_KEY = "study_timeline_tbreak_v1";
     const TODAY_ISO = "2026-11-24";
-    const START_HOUR = 10;
+    const START_HOUR = 8;
     const END_HOUR = 24;
-    const HOUR_HEIGHT = 64; // px per hour
+    const HOUR_HEIGHT = 64;
     const PX_PER_MIN = HOUR_HEIGHT / 60;
 
-    let state = {
-      selectedDate: TODAY_ISO,
-      weeks: [
-        {
-          id: "week-1",
-          title: "今週：第1週（11/23〜11/29）",
-          days: [
-            { date: "2026-11-23", label: "月曜日（11/23）", school: "10:30終了", events: [] },
-            { date: "2026-11-24", label: "火曜日（11/24）", school: "12:10終了｜23:45就寝", events: [] },
-            { date: "2026-11-25", label: "水曜日（11/25）", school: "16:10終了", events: [] },
-            { date: "2026-11-26", label: "木曜日（11/26）", school: "15:30終了", events: [] },
-            { date: "2026-11-27", label: "金曜日（11/27）", school: "16:30終了", events: [] },
-            { date: "2026-11-28", label: "土曜日（11/28）", school: "休日", events: [] },
-            { date: "2026-11-29", label: "日曜日（11/29）", school: "休日", events: [] }
-          ]
-        }
-      ]
+    // 曜日ごとの学校時間割（月〜金）
+    const TIMETABLE_INFO = {
+      "2026-11-23": "月曜時間割：09:00-10:30 数値計算(自習可) / 10:30終了（徒歩10分）",
+      "2026-11-24": "火曜時間割：09:00-10:30 計算機言語処理(単語可) / 10:40-12:10 情報AL(自習不可) / 23:45就寝・入浴なし",
+      "2026-11-25": "水曜時間割：10:40-12:10 英語(自習可) / 昼50分 / 午後プログラミング・情報セキュリティ(自習不可) 16:10終了",
+      "2026-11-26": "木曜時間割：1限 応用数学(自習可) / 2限 計算機NW(自習不可) / 3限 応用物理(自習可)",
+      "2026-11-27": "金曜時間割：午前 自宅自習可 / 13:00-16:10 情報工学実験（家まで徒歩10分）",
+      "2026-11-28": "土曜：23:45就寝・入浴なし",
+      "2026-11-29": "日曜：23:45就寝・入浴なし"
     };
 
-    let editTarget = null;
-
-    function saveLocal() {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    function createInitialState() {
+      return {
+        selectedDate: TODAY_ISO,
+        tbreakMin: 10,
+        startTime: "15:20",
+        bedtime: "23:45",
+        weeks: [
+          {
+            id: "week-1",
+            title: "今週：第1週（11/23〜11/29）",
+            days: [
+              { date: "2026-11-23", label: "月曜日（11/23）", school: TIMETABLE_INFO["2026-11-23"], events: [
+                { id: "e-1123-s", start: "23:45", end: "23:59", title: "就寝（23:45）", cat: "life", done: true }
+              ]},
+              { date: "2026-11-24", label: "火曜日（11/24）", school: TIMETABLE_INFO["2026-11-24"], events: [
+                { id: "e-1", start: "15:20", end: "16:20", title: "大学生の初等力学 #51（60分）", cat: "physics", done: false },
+                { id: "e-tb1", start: "16:20", end: "16:30", title: "Tブレイク（10分）", cat: "tbreak", done: false },
+                { id: "e-2", start: "16:30", end: "16:50", title: "TOEFL3800 Rank3 後ろから（20分）", cat: "english", done: false },
+                { id: "e-tb2", start: "16:50", end: "17:00", title: "Tブレイク（10分）", cat: "tbreak", done: false },
+                { id: "e-d1", start: "17:00", end: "17:15", title: "ドラムパッド練習 前半（15分）", cat: "drum", done: false },
+                { id: "e-tb3", start: "17:15", end: "17:25", title: "Tブレイク（10分）", cat: "tbreak", done: false },
+                { id: "e-3", start: "17:25", end: "18:25", title: "大学生の初等力学 #52（60分）", cat: "physics", done: false },
+                { id: "e-meal", start: "18:25", end: "18:55", title: "食事・休憩（30分）", cat: "life", done: false },
+                { id: "e-4", start: "18:55", end: "19:55", title: "大学生の初等力学 #53（60分）", cat: "physics", done: false },
+                { id: "e-tb4", start: "19:55", end: "20:05", title: "Tブレイク（10分）", cat: "tbreak", done: false },
+                { id: "e-5", start: "20:05", end: "21:05", title: "大学生の初等力学 #54（60分）", cat: "physics", done: false },
+                { id: "e-d2", start: "21:05", end: "21:20", title: "ドラムパッド練習 後半（15分・計30分）", cat: "drum", done: false },
+                { id: "e-sleep", start: "23:45", end: "23:59", title: "就寝（23:45・入浴なし）", cat: "life", done: false }
+              ]},
+              { date: "2026-11-25", label: "水曜日（11/25）", school: TIMETABLE_INFO["2026-11-25"], events: [
+                { id: "e-1125-s", start: "23:45", end: "23:59", title: "就寝（23:45）", cat: "life", done: false }
+              ]},
+              { date: "2026-11-26", label: "木曜日（11/26）", school: TIMETABLE_INFO["2026-11-26"], events: [
+                { id: "e-1126-s", start: "23:45", end: "23:59", title: "就寝（23:45）", cat: "life", done: false }
+              ]},
+              { date: "2026-11-27", label: "金曜日（11/27）", school: TIMETABLE_INFO["2026-11-27"], events: [
+                { id: "e-1127-s", start: "23:45", end: "23:59", title: "就寝（23:45）", cat: "life", done: false }
+              ]},
+              { date: "2026-11-28", label: "土曜日（11/28）", school: TIMETABLE_INFO["2026-11-28"], events: [
+                { id: "e-1128-s", start: "23:45", end: "23:59", title: "就寝（23:45）", cat: "life", done: false }
+              ]},
+              { date: "2026-11-29", label: "日曜日（11/29）", school: TIMETABLE_INFO["2026-11-29"], events: [
+                { id: "e-1129-s", start: "23:45", end: "23:59", title: "就寝（23:45）", cat: "life", done: false }
+              ]}
+            ]
+          }
+        ]
+      };
     }
+
+    let state = loadLocal();
+    let editTarget = null;
 
     function loadLocal() {
       try {
@@ -536,30 +618,15 @@
         if (raw) {
           const parsed = JSON.parse(raw);
           if (parsed && Array.isArray(parsed.weeks)) {
-            state = parsed;
-            return true;
+            return { ...createInitialState(), ...parsed };
           }
         }
       } catch {}
-      return false;
+      return createInitialState();
     }
 
-    async function fetchExternalJson(showNotice = false) {
-      try {
-        const res = await fetch(JSON_URL + "?t=" + Date.now());
-        if (!res.ok) throw new Error("fetch failed");
-        const data = await res.json();
-        if (data && Array.isArray(data.weeks)) {
-          state = { ...state, ...data };
-          saveLocal();
-          render(true);
-          if (showNotice) showToast("sche.json を読み込みました");
-          return true;
-        }
-      } catch {
-        if (showNotice) showToast("sche.json の取得に失敗しました");
-      }
-      return false;
+    function saveLocal() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     }
 
     function showToast(msg) {
@@ -591,9 +658,78 @@
       return parts[0] * 60 + parts[1];
     }
 
+    function minutesToTime(min) {
+      const clamped = Math.max(0, Math.min(23 * 60 + 59, Math.round(min)));
+      const h = String(Math.floor(clamped / 60)).padStart(2, "0");
+      const m = String(clamped % 60).padStart(2, "0");
+      return `${h}:${m}`;
+    }
+
     function getCurrentDay() {
       const w = state.weeks[0];
       return w.days.find(d => d.date === state.selectedDate) || w.days[1] || w.days[0];
+    }
+
+    // Tブレイクを計算に入れて今日のイベント列を連続再配置する
+    function recalculateWithTBreak() {
+      const day = getCurrentDay();
+      const startStr = document.getElementById("cfg-start").value.trim() || state.startTime || "15:20";
+      const tbreak = Math.max(0, Number(document.getElementById("cfg-tbreak").value) || 0);
+      const bedStr = document.getElementById("cfg-bedtime").value.trim() || state.bedtime || "23:45";
+
+      state.startTime = startStr;
+      state.tbreakMin = tbreak;
+      state.bedtime = bedStr;
+
+      let cursor = timeToMinutes(startStr);
+      if (cursor === null) cursor = 15 * 60 + 20;
+
+      // 既存の自動Tブレイクを除き、就寝以外のイベントを順に詰める
+      const coreEvents = (day.events || []).filter(e => e.cat !== "tbreak" && e.id !== "e-sleep");
+      const rebuilt = [];
+
+      coreEvents.forEach((ev, idx) => {
+        const sMin = timeToMinutes(ev.start);
+        const eMin = timeToMinutes(ev.end);
+        const dur = (sMin !== null && eMin !== null && eMin > sMin) ? (eMin - sMin) : 30;
+
+        const nextStart = cursor;
+        const nextEnd = cursor + dur;
+        rebuilt.push({
+          ...ev,
+          start: minutesToTime(nextStart),
+          end: minutesToTime(nextEnd)
+        });
+        cursor = nextEnd;
+
+        // 次のイベントがあり、Tブレイク設定が1分以上なら間にTブレイクを挿入
+        if (tbreak > 0 && idx < coreEvents.length - 1) {
+          const tbEnd = cursor + tbreak;
+          rebuilt.push({
+            id: "tb-" + Date.now() + "-" + idx,
+            start: minutesToTime(cursor),
+            end: minutesToTime(tbEnd),
+            title: `Tブレイク（${tbreak}分）`,
+            cat: "tbreak",
+            done: false
+          });
+          cursor = tbEnd;
+        }
+      });
+
+      rebuilt.push({
+        id: "e-sleep",
+        start: bedStr,
+        end: "23:59",
+        title: `就寝（${bedStr}・入浴なし）`,
+        cat: "life",
+        done: false
+      });
+
+      day.events = rebuilt;
+      saveLocal();
+      render(false);
+      showToast(`Tブレイク（${tbreak}分）を反映して再計算しました`);
     }
 
     function toggleEvent(eventId) {
@@ -609,18 +745,21 @@
       }
     }
 
-    function scrollTo1505() {
+    function scrollToStart() {
       const scroller = document.getElementById("timeline-scroll");
-      const targetMin = 15 * 60 + 5; // 15:05
-      const startMin = START_HOUR * 60;
-      const y = (targetMin - startMin) * PX_PER_MIN;
-      scroller.scrollTop = Math.max(0, y - 16);
+      const targetMin = timeToMinutes(state.startTime) ?? (15 * 60 + 20);
+      const y = (targetMin - START_HOUR * 60) * PX_PER_MIN;
+      scroller.scrollTop = Math.max(0, y - 10);
     }
 
-    function render(shouldScrollTo1505 = false) {
+    function render(shouldScroll = false) {
       const week = state.weeks[0];
       const day = getCurrentDay();
+
       document.getElementById("week-heading").textContent = `${week.title} Day表示`;
+      document.getElementById("cfg-start").value = state.startTime || "15:20";
+      document.getElementById("cfg-tbreak").value = state.tbreakMin ?? 10;
+      document.getElementById("cfg-bedtime").value = state.bedtime || "23:45";
 
       const strip = document.getElementById("week-strip");
       strip.innerHTML = "";
@@ -642,7 +781,8 @@
       });
 
       document.getElementById("banner-title").textContent = day.label;
-      document.getElementById("banner-sub").textContent = day.school || "";
+      document.getElementById("banner-sub").textContent = day.school || TIMETABLE_INFO[day.date] || "";
+
       const events = day.events || [];
       const doneCount = events.filter(e => e.done).length;
       document.getElementById("day-progress").textContent = `完了: ${doneCount} / ${events.length}`;
@@ -652,7 +792,6 @@
       const totalHours = END_HOUR - START_HOUR;
       canvas.style.height = (totalHours * HOUR_HEIGHT) + "px";
 
-      // 時間グリッド行
       for (let h = START_HOUR; h < END_HOUR; h++) {
         const row = document.createElement("div");
         row.className = "hour-row";
@@ -671,7 +810,6 @@
         canvas.appendChild(row);
       }
 
-      // 予定ブロックを時間（分）に比例した高さ・位置で配置
       const baseMin = START_HOUR * 60;
       const maxMin = END_HOUR * 60;
 
@@ -679,16 +817,14 @@
         const startMin = timeToMinutes(ev.start);
         if (startMin === null) return;
         let endMin = timeToMinutes(ev.end);
-        if (endMin === null || endMin <= startMin) {
-          endMin = startMin + 30;
-        }
+        if (endMin === null || endMin <= startMin) endMin = startMin + 20;
 
         const clampedStart = Math.max(baseMin, Math.min(maxMin, startMin));
         const clampedEnd = Math.max(clampedStart + 10, Math.min(maxMin, endMin));
         const durationMin = clampedEnd - clampedStart;
 
         const topPx = (clampedStart - baseMin) * PX_PER_MIN;
-        const heightPx = Math.max(18, durationMin * PX_PER_MIN - 2);
+        const heightPx = Math.max(16, durationMin * PX_PER_MIN - 2);
 
         const block = document.createElement("div");
         block.className = `event-block cat-${ev.cat || "physics"}`
@@ -712,7 +848,7 @@
         const textWrap = document.createElement("div");
         textWrap.className = "event-text-wrap";
         textWrap.innerHTML = `
-          <span class="event-time">${ev.start || ""}–${ev.end || ""} (${durationMin}m)</span>
+          <span class="event-time">${ev.start}–${ev.end} (${durationMin}m)</span>
           <span class="event-title">${ev.title}</span>
         `;
 
@@ -736,21 +872,20 @@
         canvas.appendChild(block);
       });
 
-      // 現在時刻ライン（15:01）
       if (day.date === TODAY_ISO) {
-        const nowMin = 15 * 60 + 1;
+        const nowMin = 15 * 60 + 22;
         const nowLine = document.createElement("div");
         nowLine.className = "now-line";
         nowLine.style.top = ((nowMin - baseMin) * PX_PER_MIN) + "px";
         canvas.appendChild(nowLine);
       }
 
-      if (shouldScrollTo1505) {
-        requestAnimationFrame(scrollTo1505);
+      if (shouldScroll) {
+        requestAnimationFrame(scrollToStart);
       }
     }
 
-    function openModal(eventId, presetStart = "15:05") {
+    function openModal(eventId, presetStart = "15:20") {
       editTarget = { eventId };
       const day = getCurrentDay();
       const ev = eventId ? day.events.find(e => e.id === eventId) : null;
@@ -769,9 +904,17 @@
       editTarget = null;
     }
 
-    document.getElementById("scroll-1505-btn").addEventListener("click", scrollTo1505);
-    document.getElementById("add-event-btn").addEventListener("click", () => openModal(null, "15:05"));
-    document.getElementById("reload-json-btn").addEventListener("click", () => fetchExternalJson(true));
+    document.getElementById("add-event-btn").addEventListener("click", () => openModal(null, state.startTime || "15:20"));
+    document.getElementById("apply-tbreak-btn").addEventListener("click", recalculateWithTBreak);
+
+    document.getElementById("apply-timetable-btn").addEventListener("click", () => {
+      const day = getCurrentDay();
+      day.school = TIMETABLE_INFO[day.date] || day.school || "";
+      saveLocal();
+      render(false);
+      showToast("時間割メモを反映しました");
+    });
+
     document.getElementById("m-cancel").addEventListener("click", closeModal);
     document.getElementById("modal").addEventListener("click", (e) => {
       if (e.target.id === "modal") closeModal();
@@ -808,45 +951,68 @@
       showToast("削除しました");
     });
 
+    // コピペJSONモーダル
+    document.getElementById("open-paste-btn").addEventListener("click", () => {
+      document.getElementById("paste-textarea").value = "";
+      document.getElementById("paste-modal").classList.add("open");
+    });
+
+    document.getElementById("paste-cancel").addEventListener("click", () => {
+      document.getElementById("paste-modal").classList.remove("open");
+    });
+
+    document.getElementById("paste-apply").addEventListener("click", () => {
+      try {
+        const raw = document.getElementById("paste-textarea").value.trim();
+        const parsed = JSON.parse(raw);
+
+        if (parsed && Array.isArray(parsed.weeks)) {
+          state = { ...state, ...parsed };
+          saveLocal();
+          document.getElementById("paste-modal").classList.remove("open");
+          render(true);
+          showToast("週間JSONを読み込みました");
+          return;
+        }
+
+        // 1日分のJSON（{ date, events }）が貼られた場合も反映
+        if (parsed && Array.isArray(parsed.events)) {
+          const targetDate = parsed.date || state.selectedDate || TODAY_ISO;
+          const day = state.weeks[0].days.find(d => d.date === targetDate) || getCurrentDay();
+          day.events = parsed.events;
+          if (parsed.school) day.school = parsed.school;
+          state.selectedDate = day.date;
+          saveLocal();
+          document.getElementById("paste-modal").classList.remove("open");
+          render(true);
+          showToast(`${day.label} のJSONを反映しました`);
+          return;
+        }
+
+        showToast("対応していないJSON構造です");
+      } catch {
+        showToast("JSONの読み込みに失敗しました");
+      }
+    });
+
+    document.getElementById("copy-json-btn").addEventListener("click", () => {
+      const day = getCurrentDay();
+      const text = JSON.stringify({ date: day.date, label: day.label, school: day.school, events: day.events }, null, 2);
+      navigator.clipboard?.writeText(text).then(() => showToast("今日のJSONをコピーしました"));
+    });
+
     document.getElementById("export-btn").addEventListener("click", () => {
       const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = "sche.json";
+      a.download = "day-timeline.json";
       a.click();
       URL.revokeObjectURL(url);
-      showToast("sche.json を保存しました");
+      showToast("JSONを保存しました");
     });
 
-    document.getElementById("import-file").addEventListener("change", (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = () => {
-        try {
-          const parsed = JSON.parse(reader.result);
-          if (parsed && Array.isArray(parsed.weeks)) {
-            state = parsed;
-            saveLocal();
-            render(true);
-            showToast("JSONを読み込みました");
-          }
-        } catch {
-          showToast("読み込みに失敗しました");
-        }
-      };
-      reader.readAsText(file);
-      e.target.value = "";
-    });
-
-    (async () => {
-      const hasLocal = loadLocal();
-      render(true);
-      if (!hasLocal) {
-        await fetchExternalJson(false);
-      }
-    })();
+    render(true);
   </script>
 </body>
 </html>
