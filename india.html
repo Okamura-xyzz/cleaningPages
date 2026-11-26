@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>生活＆清掃ルーティン ホーム</title>
+  <style>
+    :root {
+      --bg: #f6f8fb;
+      --card: #ffffff;
+      --text: #1e293b;
+      --muted: #64748b;
+      --accent: #2563eb;
+      --accent-soft: #dbeafe;
+      --success: #16a34a;
+      --success-soft: #dcfce7;
+      --border: #e2e8f0;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Hiragino Sans", "Noto Sans JP", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    header {
+      background: linear-gradient(135deg, #1d4ed8, #0ea5e9);
+      color: #fff;
+      padding: 24px 16px;
+    }
+
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+
+    h1 {
+      margin: 0 0 6px;
+      font-size: 1.5rem;
+    }
+
+    .subtitle {
+      margin: 0;
+      opacity: 0.92;
+      font-size: 0.92rem;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    button, .file-label {
+      background: #fff;
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: transform 0.12s ease, background 0.15s ease;
+    }
+
+    button:hover, .file-label:hover {
+      background: #f1f5f9;
+      transform: translateY(-1px);
+    }
+
+    button.primary {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+
+    button.primary:hover {
+      background: #1d4ed8;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+      margin: 16px 0;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+    }
+
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .stat-label {
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .filter-pill {
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--card);
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+
+    .filter-pill.active {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+
+    .day-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 12px;
+      transition: border-color 0.2s ease, background 0.2s ease;
+    }
+
+    .day-card.all-done {
+      background: #f8fff9;
+      border-color: #86efac;
+    }
+
+    .day-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding-bottom: 8px;
+      margin-bottom: 10px;
+      border-bottom: 1px dashed var(--border);
+    }
+
+    .date-title {
+      font-weight: 700;
+      font-size: 1rem;
+    }
+
+    .school-badge {
+      font-size: 0.78rem;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: #1e40af;
+      font-weight: 600;
+    }
+
+    .task-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .task-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      background: #f8fafc;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.15s ease;
+    }
+
+    .task-item:hover {
+      background: #f1f5f9;
+    }
+
+    .task-item.done {
+      background: var(--success-soft);
+    }
+
+    .task-item.done .task-text {
+      text-decoration: line-through;
+      color: #15803d;
+    }
+
+    .task-item input[type="radio"] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--success);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .task-tag {
+      font-size: 0.72rem;
+      padding: 2px 6px;
+      border-radius: 6px;
+      background: #e2e8f0;
+      color: #334155;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+
+    .info-box {
+      margin-top: 20px;
+      font-size: 0.88rem;
+      color: var(--muted);
+    }
+
+    /* 完了エフェクト用 */
+    #confetti-layer {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 9999;
+    }
+
+    .confetti {
+      position: absolute;
+      top: -12px;
+      width: 10px;
+      height: 14px;
+      border-radius: 2px;
+      animation: fall 1.1s ease-out forwards;
+    }
+
+    @keyframes fall {
+      0% {
+        transform: translateY(0) rotate(0deg) scale(1);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(85vh) rotate(540deg) scale(0.8);
+        opacity: 0;
+      }
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #0f172a;
+      color: #fff;
+      padding: 10px 16px;
+      border-radius: 10px;
+      font-size: 0.88rem;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.25s ease, transform 0.25s ease;
+      z-index: 10000;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+  <div id="confetti-layer"></div>
+  <div id="toast" class="toast"></div>
+
+  <header>
+    <div class="container">
+      <h1>生活＆清掃ルーティン ホーム</h1>
+      <p class="subtitle">2026年11月25日〜12月31日｜学校時間割・ゴミ回収・風呂2分割対応</p>
+      <div class="toolbar">
+        <button class="primary" id="export-btn">進捗をJSON保存</button>
+        <label class="file-label">
+          進捗ファイルを読み込み
+          <input type="file" id="import-file" accept=".json,application/json" hidden />
+        </label>
+        <button id="reset-btn">進捗をリセット</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="stats-grid">
+      <div class="card">
+        <div class="stat-label">全体の完了率</div>
+        <div class="stat-value" id="overall-rate">0%</div>
+      </div>
+      <div class="card">
+        <div class="stat-label">完了タスク数</div>
+        <div class="stat-value" id="done-count">0 / 0</div>
+      </div>
+      <div class="card">
+        <div class="stat-label">風呂掃除ルール</div>
+        <div style="font-size: 0.88rem; font-weight: 600; margin-top: 4px;">
+          A：浴槽・床（軽め）<br />B：排水口・壁・小物（週1）
+        </div>
+      </div>
+    </section>
+
+    <section class="filter-bar">
+      <button class="filter-pill active" data-filter="all">すべて表示</button>
+      <button class="filter-pill" data-filter="11">11月（11/25〜）</button>
+      <button class="filter-pill" data-filter="12">12月</button>
+      <button class="filter-pill" data-filter="undone">未完了のみ</button>
+    </section>
+
+    <section id="schedule-container"></section>
+
+    <section class="card info-box">
+      <strong>GitHub Pages ＆ 保存の仕組み：</strong><br />
+      ・クリックした進捗は自動でブラウザ（<code>localStorage</code>）に保存され、リロードしても維持されます。<br />
+      ・別端末やバックアップ用に「進捗をJSON保存／読み込み」も使えます。
+    </section>
+  </main>
+
+  <script>
+    const STORAGE_KEY = "life_routine_2026_v1";
+
+    // 学校終了時間：月10:30 / 火12:10 / 水16:10 / 木15:30 / 金16:30
+    // ゴミ回収：月・木 燃えるゴミ / 第2水曜(12/9) ペットボトル
+    // 風呂掃除：A(浴槽・床) / B(排水口・壁・小物)
+    // 下駄箱掃除は削除済み
+    const SCHEDULE_DATA = [
+      { date: "2026-11-25", label: "11月25日（水）", month: "11", school: "16:10終了", tasks: [
+        { id: "1125-daily", tag: "毎日", text: "食器洗い・洗濯物整理・コンロ拭き" },
+        { id: "1125-vac", tag: "3日軸", text: "部屋の掃除機かけ" },
+        { id: "1125-bathA", tag: "風呂A", text: "風呂掃除A（浴槽・床の洗い流し）" }
+      ]},
+      { date: "2026-11-26", label: "11月26日（木）", month: "11", school: "15:30終了・燃えるゴミ", tasks: [
+        { id: "1126-trash", tag: "ゴミ", text: "燃えるゴミを出す" },
+        { id: "1126-daily", tag: "毎日", text: "食器洗い・洗濯物整理・コンロ拭き" }
+      ]},
+      { date: "2026-11-27", label: "11月27日（金）", month: "11", school: "16:30終了", tasks: [
+        { id: "1127-daily", tag: "毎日", text: "食器洗い・洗濯物整理・コンロ拭き（軽め）" }
+      ]},
+      { date: "2026-11-28", label: "11月28日（土）", month: "11", school: "休日", tasks: [
+        { id: "1128-daily", tag: "毎日", text: "食器洗い・洗濯物整理・コンロ拭き" },
+        { id: "1128-vac", tag: "3日軸", text: "部屋の掃除機かけ" },
+        { id: "1128-bathB", tag: "風呂B", text: "風呂掃除B（排水口・壁・小物ケア）" },
+        { id: "1128-sheet", tag: "隔週", text: "布団のシーツ洗い・トイレ掃除・床拭き" }
+      ]},
+      { date: "2026-11-29", label: "11月29日（日）", month: "11", school: "休日", tasks: [
+        { id: "1129-daily", tag: "毎日", text: "食器洗い・洗濯物整理・コンロ拭き" },
+        { id: "1129-porch", tag: "週末", text: "玄関ポーチ掃き掃除・月曜ゴミまとめ" }
+      ]},
+      { date: "2026-11-30", label: "11月30日（月）", month: "11", school: "10:30終了・燃えるゴミ", tasks: [
+        { id: "1130-trash", tag: "ゴミ", text: "燃えるゴミを出す" },
+        { id: "1130-daily", tag: "毎日", text: "食器洗い・洗濯物整理・コンロ拭き" },
+        { id: "1130-fridge", tag: "週1", text: "冷蔵庫整理・キッチン排水口掃除" }
+      ]},
+      { date: "2026-12-01", label: "12月1日（火）", month: "12", school: "12:10終了", tasks: [
+        { id: "1201-daily", tag: "毎日", text: "食器洗い・洗濯物整理・コンロ拭き" },
+        { id: "1201-vac", tag: "3日軸", text: "部屋の掃除機かけ" },
+        { id: "1201-bathA", tag: "風呂A", text: "風呂掃除A（浴槽・床の洗い流し）" },
+        { id: "1201-sink", tag: "週1", text: "電子レンジ・洗面台拭き" }
+      ]},
+      { date: "2026-12-02", label: "12月2日（水）", month: "12", school: "16:10終了", tasks: [
+        { id: "1202-daily", tag: "毎日", text: "食器洗い・洗濯物整理・コンロ拭き" }
+      ]},
+      { date: "2026-12-03", label: "12月3日（木）", month: "12", school: "15:30終了・燃えるゴミ", tasks: [
+        { id: "1203-trash", tag: "ゴミ", text: "燃えるゴミを出す" },
+        { id: "1203-daily", tag: "毎日", text: "食器洗い・洗濯物整理・コンロ拭き" }
+      ]},
+      { date: "2026-12-04", label: "12月4日（金）", month: "12", school: "16:30終了", tasks: [
+        { id: "1204-daily", tag: "毎日", text: "食器洗い・洗濯物整理・コンロ拭き（軽め）" },
+        { id: "1204-vac", tag: "3日軸", text: "部屋の掃除機かけ" },
+        { id: "1204-bathB", tag: "風呂B", text: "風呂掃除B（排水口・壁・小物ケア）" }
+      ]},
+      { date: "2026-12-05", label: "12月5日（土）", month: "12", school: "休日", tasks: [
+        { id: "1205-daily", tag: "毎日", text: "食器洗い・洗濯物整理・コンロ拭き" },
+        { id: "1205-toilet", tag: "週末", text: "トイレ掃除・床拭き" }
+      ]},
+      { date: "2026-12-06", label: "12月6日（日）", month: "12", school: "休日", tasks: [
+        { id: "1206-daily", tag: "毎日", text: "食器洗い・洗濯物整理・コンロ拭き" },
+        { id: "1206-porch", tag: "週末", text: "玄関ポーチ掃き掃除・月曜ゴミまとめ" }
+      ]},
+      { date: "2026-12-07", label: "12月7日（月）", month: "12", school: "10:30終了・燃えるゴミ", tasks: [
+        { id: "1207-trash", tag: "ゴミ", text: "燃えるゴミを出す" },
+        { id: "1207-daily", tag: "毎日", text: "食器洗い・洗濯物整理・コンロ拭き" },
+        { id: "1207-vac", tag: "3日軸", text: "部屋の掃除機かけ" },
+        { id: "1207-bathA", tag: "風呂A", text: "風呂掃除A（浴槽・床の洗い流し）" },
+        { id: "1207-window", tag: "重点", text: "窓サッシ拭き・不要品整理" }
+      ]},
+      { date: "2026-12-08", label: "12月8日（火）", month: "12", school: "12:10終了", tasks: [
+        { id: "1208-daily", tag: "毎日", text: "食器洗い・洗濯物整理・コンロ拭き" },
+        { id: "1208-fridge", tag: "週1", text: "冷蔵庫整理・排水口掃除・ペットボトルまとめ" }
+      ]},
+      { date: "2026-12-09", label: "12月9日（水）", month: "12", school: "16:10終了・第2水曜ペットボトル", tasks: [
+        { id: "1209-pet", tag: "ゴミ", text: "ペットボトルを出す（第2水曜）" },
+        { id: "1209-daily", tag: "毎日", text: "食器洗い・洗濯物整理・コンロ拭き" }
+      ]},
+      { date: "2026-12-10", label: "12月10日（木）", month: "12", school: "15:30終了・燃えるゴミ", tasks: [
+        { id: "1210-trash", tag: "ゴミ", text: "燃えるゴミを出す" },
+        { id: "1210-daily", tag: "毎日", text: "食器洗い・洗濯物整理・コンロ拭き" },
+        { id: "1210-vac", tag: "3日軸", text: "部屋の掃除機かけ" },
+        { id: "1210-bathB", tag: "風呂B", text: "風呂掃除B（排水口・壁・小物ケア）" }
+      ]},
+      { date: "2026-12-11", label: "12月11日（金）", month: "12", school: "16:30終了", tasks: [
+        { id: "1211-daily", tag: "毎日", text: "食器洗い・洗濯物整理・コンロ拭き（軽め）" }
+      ]},
+      { date: "2026-12-12", label: "12月12日（土）", month: "12", school: "休日", tasks: [
+        { id: "1212-daily", tag: "毎日", text: "食器洗い・洗濯物整理・コンロ拭き" },
+        { id: "1212-sheet", tag: "隔週", text: "布団のシーツ洗い・トイレ掃除・床拭き" }
+      ]},
+      { date: "2026-12-13", label: "12月13日（日）", month: "12", school: "休日", tasks: [
+        { id: "1213-daily", tag: "毎日", text: "食器洗い・洗濯物整理・コンロ拭き" },
+        { id: "1213-vac", tag: "3日軸", text: "部屋の掃除機かけ" },
+        { id: "1213-bathA", tag: "風呂A", text: "風呂掃除A（浴槽・床の洗い流し）" },
+        { id: "1213-fan", tag: "週末", text: "換気扇フィルター確認・月曜ゴミまとめ" }
+      ]},
+      { date: "2026-12-14", label: "12月14日（月）", month: "12", school: "10:30終了・燃えるゴミ", tasks: [
+        { id: "1214-trash", tag: "ゴミ", text: "燃えるゴミを出す" },
+        { id: "1214-daily", tag: "毎日", text: "食器洗い・洗濯物整理・コンロ拭き" },
+        { id: "1214-micro", tag: "週1", text: "冷蔵庫・電子レンジ拭き・洗面台掃除" }
+      ]},
+      { date: "2026-12-15", label: "12月15日（火）", month: "12", school: "12:10終了", tasks: [
+        { id: "1215-daily", tag: "毎日", text: "食器洗い・洗濯物整理・コンロ拭き" },
+        { id: "1215-drain", tag: "週1", text: "排水口掃除・ストック品整理" }
+      ]},
+      { date: "2026-12-16", label: "12月16日（水）", month: "12", school: "16:10終了", tasks: [
+        { id: "1216-daily", tag: "毎日", text: "食器洗い・洗濯物整理・コンロ拭き" },
+        { id: "1216-vac", tag: "3日軸", text: "部屋の掃除機かけ" },
+        { id: "1216-bathB", tag: "風呂B", text: "風呂掃除B（排水口・壁・小物ケア）" }
+      ]},
+      { date: "2026-12-17", label: "12月17日（木）", month: "12", school: "15:30終了・燃えるゴミ", tasks: [
+        { id: "1217-trash", tag: "ゴミ", text: "燃えるゴミを出す" },
+        { id: "1217-daily", tag: "毎日", text: "食器洗い・洗濯物整理・コンロ拭き" }
+      ]},
+      { date: "2026-12-18", label: "12月18日（金）", month: "12", school: "16:30終了", tasks: [
+        { id: "1218-daily", tag: "毎日", text: "食器洗い・洗濯物整理・コンロ拭き（軽め）" }
+      ]},
+      { date: "2026-12-19", label: "12月19日（土）", month: "12", school: "休日", tasks: [
+        { id: "1219-daily", tag: "毎日", text: "食器洗い・洗濯物整理・コンロ拭き" },
+        { id: "1219-vac", tag: "3日軸", text: "部屋の掃除機かけ" },
+        { id: "1219-bathA", tag: "風呂A", text: "風呂掃除A（浴槽・床の洗い流し）" },
+        { id: "1219-toilet", tag: "週末", text: "トイレ掃除・床拭き・窓ガラス拭き" }
+      ]},
+      { date: "2026-12-20", label: "12月20日（日）", month: "12", school: "休日", tasks: [
+        { id: "1220-daily", tag: "毎日", text: "食器洗い・洗濯物整理・コンロ拭き" },
+        { id: "1220-porch", tag: "週末", text: "玄関アプローチ掃き掃除・月曜ゴミまとめ" }
+      ]},
+      { date: "2026-12-21", label: "12月21日（月）", month: "12", school: "10:30終了・燃えるゴミ", tasks: [
+        { id: "1221-trash", tag: "ゴミ", text: "燃えるゴミを出す" },
+        { id: "1221-daily", tag: "毎日", text: "食器洗い・洗濯物整理・コンロ拭き" },
+        { id: "1221-reset", tag: "重点", text: "冬休み前の部屋リセット" }
+      ]},
+      { date: "2026-12-22", label: "12月22日（火）", month: "12", school: "12:10終了", tasks: [
+        { id: "1222-daily", tag: "毎日", text: "食器洗い・洗濯物整理・コンロ拭き" },
+        { id: "1222-vac", tag: "3日軸", text: "部屋の掃除機かけ" },
+        { id: "1222-bathB", tag: "風呂B", text: "風呂掃除B（排水口・壁・小物ケア）" },
+        { id: "1222-fridge", tag: "週1", text: "冷蔵庫整理・排水口掃除" }
+      ]},
+      { date: "2026-12-23", label: "12月23日（水）", month: "12", school: "16:10終了", tasks: [
+        { id: "1223-daily", tag: "毎日", text: "食器洗い・洗濯物整理・コンロ拭き" }
+      ]},
+      { date: "2026-12-24", label: "12月24日（木）", month: "12", school: "15:30終了・燃えるゴミ", tasks: [
+        { id: "1224-trash", tag: "ゴミ", text: "燃えるゴミを出す" },
+        { id: "1224-daily", tag: "毎日", text: "食器洗い・洗濯物整理・コンロ拭き" }
+      ]},
+      { date: "2026-12-25", label: "12月25日（金）", month: "12", school: "16:30終了", tasks: [
+        { id: "1225-daily", tag: "毎日", text: "食器洗い・洗濯物整理・コンロ拭き（軽め）" },
+        { id: "1225-vac", tag: "3日軸", text: "部屋の掃除機かけ" },
+        { id: "1225-bathA", tag: "風呂A", text: "風呂掃除A（浴槽・床の洗い流し）" }
+      ]},
+      { date: "2026-12-26", label: "12月26日（土）", month: "12", school: "休日", tasks: [
+        { id: "1226-daily", tag: "毎日", text: "食器洗い・洗濯物整理・コンロ拭き" },
+        { id: "1226-sheet", tag: "年末", text: "布団のシーツ洗い（年内最後）・換気扇＆コンロ念入り掃除" }
+      ]},
+      { date: "2026-12-27", label: "12月27日（日）", month: "12", school: "休日", tasks: [
+        { id: "1227-daily", tag: "毎日", text: "食器洗い・洗濯物整理・コンロ拭き" },
+        { id: "1227-yearEnd", tag: "年末", text: "冷蔵庫総点検・トイレ・床拭き・月曜ゴミまとめ" }
+      ]},
+      { date: "2026-12-28", label: "12月28日（月）", month: "12", school: "10:30終了・燃えるゴミ", tasks: [
+        { id: "1228-trash", tag: "ゴミ", text: "燃えるゴミを出す（最終回収日を確認）" },
+        { id: "1228-daily", tag: "毎日", text: "食器洗い・洗濯物整理・コンロ拭き" },
+        { id: "1228-vac", tag: "3日軸", text: "部屋の掃除機かけ" },
+        { id: "1228-bathB", tag: "風呂B", text: "風呂掃除B（排水口・壁・小物ケア）" }
+      ]},
+      { date: "2026-12-29", label: "12月29日（火）", month: "12", school: "12:10終了", tasks: [
+        { id: "1229-daily", tag: "毎日", text: "食器洗い・洗濯物整理・コンロ拭き" },
+        { id: "1229-pet", tag: "整理", text: "ペットボトル分別まとめ" }
+      ]},
+      { date: "2026-12-30", label: "12月30日（水）", month: "12", school: "16:10終了", tasks: [
+        { id: "1230-daily", tag: "毎日", text: "食器洗い・洗濯物整理・コンロ拭き・小片付け" }
+      ]},
+      { date: "2026-12-31", label: "12月31日（木）", month: "12", school: "大晦日", tasks: [
+        { id: "1231-daily", tag: "毎日", text: "食器洗い・洗濯物整理・コンロ拭き" },
+        { id: "1231-vac", tag: "3日軸", text: "部屋の掃除機かけ" },
+        { id: "1231-bathA", tag: "風呂A", text: "風呂掃除A（浴槽・床の洗い流し）" },
+        { id: "1231-final", tag: "大晦日", text: "年越し前の最終リセット" }
+      ]}
+    ];
+
+    let state = loadState();
+    let currentFilter = "all";
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        return raw ? JSON.parse(raw) : {};
+      } catch {
+        return {};
+      }
+    }
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.classList.add("show");
+      clearTimeout(showToast._timer);
+      showToast._timer = setTimeout(() => toast.classList.remove("show"), 2000);
+    }
+
+    function triggerConfetti() {
+      const layer = document.getElementById("confetti-layer");
+      const colors = ["#2563eb", "#16a34a", "#f59e0b", "#ec4899", "#06b6d4"];
+      for (let i = 0; i < 24; i++) {
+        const piece = document.createElement("div");
+        piece.className = "confetti";
+        piece.style.left = Math.random() * 100 + "vw";
+        piece.style.background = colors[i % colors.length];
+        piece.style.animationDelay = (Math.random() * 0.25) + "s";
+        layer.appendChild(piece);
+        setTimeout(() => piece.remove(), 1400);
+      }
+    }
+
+    function toggleTask(taskId) {
+      const nextVal = !state[taskId];
+      state[taskId] = nextVal;
+      saveState();
+      render();
+      if (nextVal) {
+        triggerConfetti();
+        showToast("完了！お疲れ様です");
+      }
+    }
+
+    function updateStats() {
+      const allTasks = SCHEDULE_DATA.flatMap(d => d.tasks);
+      const total = allTasks.length;
+      const done = allTasks.filter(t => !!state[t.id]).length;
+      const rate = total === 0 ? 0 : Math.round((done / total) * 100);
+      document.getElementById("overall-rate").textContent = rate + "%";
+      document.getElementById("done-count").textContent = done + " / " + total;
+    }
+
+    function render() {
+      updateStats();
+      const container = document.getElementById("schedule-container");
+      container.innerHTML = "";
+
+      SCHEDULE_DATA.forEach(day => {
+        if (currentFilter === "11" && day.month !== "11") return;
+        if (currentFilter === "12" && day.month !== "12") return;
+
+        const visibleTasks = currentFilter === "undone"
+          ? day.tasks.filter(t => !state[t.id])
+          : day.tasks;
+
+        if (currentFilter === "undone" && visibleTasks.length === 0) return;
+
+        const allDayDone = day.tasks.every(t => !!state[t.id]);
+        const card = document.createElement("div");
+        card.className = "day-card" + (allDayDone ? " all-done" : "");
+
+        const header = document.createElement("div");
+        header.className = "day-header";
+        header.innerHTML = `
+          <span class="date-title">${day.label}</span>
+          <span class="school-badge">${day.school}</span>
+        `;
+        card.appendChild(header);
+
+        const list = document.createElement("div");
+        list.className = "task-list";
+
+        visibleTasks.forEach(task => {
+          const isDone = !!state[task.id];
+          const item = document.createElement("div");
+          item.className = "task-item" + (isDone ? " done" : "");
+
+          // ラジオボタン風UI（クリックでON/OFF切り替え可能）
+          const radio = document.createElement("input");
+          radio.type = "radio";
+          radio.checked = isDone;
+          radio.addEventListener("click", (e) => {
+            e.stopPropagation();
+            toggleTask(task.id);
+          });
+
+          const tag = document.createElement("span");
+          tag.className = "task-tag";
+          tag.textContent = task.tag;
+
+          const text = document.createElement("span");
+          text.className = "task-text";
+          text.textContent = task.text;
+
+          item.addEventListener("click", () => toggleTask(task.id));
+          item.appendChild(radio);
+          item.appendChild(tag);
+          item.appendChild(text);
+          list.appendChild(item);
+        });
+
+        card.appendChild(list);
+        container.appendChild(card);
+      });
+    }
+
+    document.querySelectorAll(".filter-pill").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".filter-pill").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        currentFilter = btn.dataset.filter;
+        render();
+      });
+    });
+
+    document.getElementById("export-btn").addEventListener("click", () => {
+      const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "routine-progress-2026.json";
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast("JSONファイルを保存しました");
+    });
+
+    document.getElementById("import-file").addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const parsed = JSON.parse(reader.result);
+          if (typeof parsed === "object" && parsed !== null) {
+            state = parsed;
+            saveState();
+            render();
+            showToast("進捗ファイルを読み込みました");
+          }
+        } catch {
+          showToast("JSONの読み込みに失敗しました");
+        }
+      };
+      reader.readAsText(file);
+      e.target.value = "";
+    });
+
+    document.getElementById("reset-btn").addEventListener("click", () => {
+      if (confirm("すべての完了チェックをリセットしますか？")) {
+        state = {};
+        saveState();
+        render();
+        showToast("リセットしました");
+      }
+    });
+
+    render();
+  </script>
+</body>
+</html>
